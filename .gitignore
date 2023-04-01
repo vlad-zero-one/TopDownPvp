@@ -72,4 +72,5 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 /**/Photon/**/Demos
+/**/Photon/**/Demos.meta
 /**/UniRx/**/Examples
