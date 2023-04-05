@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using DependencyInjection;
+using UnityEngine.SceneManagement;
 
 namespace Game
 {
@@ -12,7 +13,10 @@ namespace Game
         private Logger logger;
 
         public delegate void ErrorDelegate(string message);
+        public delegate void SuccessDelegate();
+
         public event ErrorDelegate OnError;
+        public event SuccessDelegate OnJoinRoom;
 
         public void InitConnection()
         {
@@ -21,11 +25,18 @@ namespace Game
             PhotonNetwork.ConnectUsingSettings();
 
             logger = DI.Get<Logger>();
+
+            DI.Add(this);
         }
 
         public void JoinRoom(string roomName)
         {
             PhotonNetwork.JoinRoom(roomName);
+        }
+
+        public void LeaveRoom()
+        {
+            PhotonNetwork.LeaveRoom();
         }
 
         public void CreateRoom(string roomName)
@@ -78,13 +89,15 @@ namespace Game
 
         public void OnFriendListUpdate(List<FriendInfo> friendList)
         {
-
+            throw new System.NotImplementedException();
         }
 
         public void OnJoinedRoom()
         {
             logger.Log($"Player {PhotonNetwork.LocalPlayer.NickName} joined {PhotonNetwork.CurrentRoom.Name} room");
             logger.Log($"{PhotonNetwork.MasterClient.NickName} is master client");
+
+            OnJoinRoom?.Invoke();
         }
 
         public void OnJoinRandomFailed(short returnCode, string message)
@@ -102,10 +115,13 @@ namespace Game
         public void OnLeftRoom()
         {
             logger.Log($"Player {PhotonNetwork.LocalPlayer.NickName} left room");
+
+            SceneManager.LoadScene(0);
         }
 
         public void OnRegionListReceived(RegionHandler regionHandler)
         {
+            logger.Log($"Region List Received");
         }
 
         public void OnPlayerEnteredRoom(Player newPlayer)
@@ -125,7 +141,11 @@ namespace Game
 
         public void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
         {
-            throw new System.NotImplementedException();
+            logger.Log($"Player properties update {targetPlayer.NickName}");
+            foreach(var prop in changedProps)
+            {
+                logger.Log($"Property {prop.Key}, value {prop.Value}");
+            }
         }
 
         public void OnMasterClientSwitched(Player newMasterClient)

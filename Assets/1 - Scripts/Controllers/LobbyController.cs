@@ -1,12 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DependencyInjection;
 using Photon.Pun;
-using System;
 using WebSocketSharp;
-using System.Threading;
 
 namespace Game.Controllers
 {
@@ -28,14 +25,17 @@ namespace Game.Controllers
 
         private void Awake()
         {
-            connectionManager = new();
-            PhotonNetwork.AddCallbackTarget(connectionManager);
-            connectionManager.InitConnection();
-            connectionManager.OnError += ShowAlert;
-
-            DI.Add(connectionManager);
+            connectionManager = DI.Get<ConnectionManager>();
 
             InitButtons();
+
+            connectionManager.OnError += ShowAlert;
+            connectionManager.OnJoinRoom += LoadGameScene;
+        }
+
+        private void LoadGameScene()
+        {
+            PhotonNetwork.LoadLevel(Scenes.GameScene);
         }
 
         private void InitButtons()
@@ -91,6 +91,7 @@ namespace Game.Controllers
         private void OnDestroy()
         {
             connectionManager.OnError -= ShowAlert;
+            connectionManager.OnJoinRoom -= LoadGameScene;
         }
     }
 }
