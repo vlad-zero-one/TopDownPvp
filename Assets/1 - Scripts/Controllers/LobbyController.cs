@@ -29,8 +29,8 @@ namespace Game.Controllers
 
             InitButtons();
 
-            connectionManager.OnError += ShowAlert;
-            connectionManager.OnJoinRoom += LoadGameScene;
+            connectionManager.Error += ShowAlert;
+            connectionManager.JoinedRoom += LoadGameScene;
         }
 
         private void LoadGameScene()
@@ -90,8 +90,8 @@ namespace Game.Controllers
 
         private void OnDestroy()
         {
-            connectionManager.OnError -= ShowAlert;
-            connectionManager.OnJoinRoom -= LoadGameScene;
+            connectionManager.Error -= ShowAlert;
+            connectionManager.JoinedRoom -= LoadGameScene;
         }
     }
 }

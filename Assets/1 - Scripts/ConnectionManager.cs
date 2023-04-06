@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
@@ -12,11 +11,11 @@ namespace Game
     {
         private Logger logger;
 
-        public delegate void ErrorDelegate(string message);
-        public delegate void SuccessDelegate();
+        public delegate void ErrorEventHandler(string message);
+        public delegate void SuccessEventHandler();
 
-        public event ErrorDelegate OnError;
-        public event SuccessDelegate OnJoinRoom;
+        public event ErrorEventHandler Error;
+        public event SuccessEventHandler JoinedRoom;
 
         public void InitConnection()
         {
@@ -97,7 +96,7 @@ namespace Game
             logger.Log($"Player {PhotonNetwork.LocalPlayer.NickName} joined {PhotonNetwork.CurrentRoom.Name} room");
             logger.Log($"{PhotonNetwork.MasterClient.NickName} is master client");
 
-            OnJoinRoom?.Invoke();
+            JoinedRoom?.Invoke();
         }
 
         public void OnJoinRandomFailed(short returnCode, string message)
@@ -109,7 +108,7 @@ namespace Game
         {
             logger.Log($"Failed joining room: code: {returnCode}, message: {message}");
 
-            OnError?.Invoke($"Failed joining room: {message}");
+            Error?.Invoke($"Failed joining room: {message}");
         }
 
         public void OnLeftRoom()

@@ -14,33 +14,37 @@ namespace Game.Controllers
 
         public void Init()
         {
-            range = joystickHandler.rect.width / 2 - joystick.rect.width / 2;
+            range = joystickHandler.rect.width - joystick.rect.width;
         }
 
         public void OnDrag(PointerEventData data)
         {
             if (data.delta.magnitude > 0.1f)
             {
-                joystickHandler.position = data.pressPosition;
+                var pressPosition = data.pressPosition;
+                var position = data.position;
+
+                joystickHandler.position = pressPosition;
                 Vector2 moveDirection;
 
-                if ((data.position - data.pressPosition).magnitude < range)
+                if ((position - pressPosition).magnitude < range)
                 {
-                    joystick.position = data.position;
+                    joystick.position = position;
                     moveDirection = new(
-                        (data.position.x - data.pressPosition.x) / range,
-                        (data.position.y - data.pressPosition.y) / range);
+                        (position.x - pressPosition.x) / range,
+                        (position.y - pressPosition.y) / range);
                 }
                 else
                 {
-                    float deltaX = data.position.x - data.pressPosition.x;
-                    float deltaY = data.position.y - data.pressPosition.y;
+                    var deltaX = position.x - pressPosition.x;
+                    var deltaY = position.y - pressPosition.y;
 
                     var state = Vector2.ClampMagnitude(new(deltaX, deltaY), range);
 
-                    joystick.position = state + data.pressPosition;
+                    joystick.position = state + pressPosition;
                     moveDirection = new(state.x / range, state.y / range);
                 }
+
                 MoveDirective?.Invoke(moveDirection);
             }
         }
