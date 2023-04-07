@@ -1,10 +1,8 @@
 ﻿using UnityEngine;
 using DependencyInjection;
 using UnityEngine.UI;
-using Game.Controllers;
-using System;
-using UnityEditor;
 using Photon.Pun;
+using System;
 
 namespace Game.Controllers
 {
@@ -12,13 +10,16 @@ namespace Game.Controllers
     {
         [SerializeField] private Button leaveButton;
         [SerializeField] private TouchPadMoveController moveController;
+        [SerializeField] private KeyboardShootController shootController;
 
         [SerializeField] private PlayerController playerPrefab;
+        [SerializeField] private BulletController bulletPrefab;
 
         private ConnectionManager connectionManager;
         private Logger logger;
 
         private PlayerController player;
+        private Vector2 lastDirection;
 
         private void Awake()
         {
@@ -38,8 +39,22 @@ namespace Game.Controllers
             moveController.MoveDirective += MovePlayer;
             moveController.StopDirective += StopPlayer;
 
+            shootController.Init();
+            shootController.ShootDirective += Shoot;
+
             connectionManager.LeftRoom += LoadLobbyScene;
         }
+
+        private void Shoot()
+        {
+            var bullet = PhotonNetwork.Instantiate(bulletPrefab.name,
+                    player.transform.position,
+                    Quaternion.identity)
+                .GetComponent<BulletController>();
+
+            bullet.Shoot(player, lastDirection);
+        }
+
         private void LoadLobbyScene()
         {
             PhotonNetwork.LoadLevel(Scenes.LobbyScene);
@@ -47,6 +62,7 @@ namespace Game.Controllers
 
         private void MovePlayer(Vector2 direction)
         {
+            lastDirection = direction;
             player.StartMove(direction);
         }
 

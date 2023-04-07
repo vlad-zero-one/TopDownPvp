@@ -14,6 +14,8 @@ namespace Game.Controllers
 
         private bool moving;
 
+        private int hp = 10;
+
         public void Init(string nickName, float speed = 4f)
         {
             this.nickName.text = nickName;
@@ -31,11 +33,20 @@ namespace Game.Controllers
             moving = false;
         }
 
+        public void Damage()
+        {
+            nickName.text = $"{--hp}";
+        }
+
         private void FixedUpdate()
         {
             if (moving)
             {
-                rbody.MovePosition(transform.position + speed * Time.fixedDeltaTime * moveDirection);
+                var lastPos = transform.position;
+                var pos = lastPos + speed * Time.fixedDeltaTime * moveDirection;
+                rbody.MovePosition(pos);
+
+                transform.up = pos - lastPos;
             }
         }
     }

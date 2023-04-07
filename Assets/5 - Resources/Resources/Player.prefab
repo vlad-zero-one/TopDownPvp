@@ -363,7 +363,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rbody: {fileID: 5064107013245906479}
   nickName: {fileID: 5064107011960216388}
-  overrideSpeed: 0
 --- !u!114 &4740157003977502463
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -377,6 +376,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
-  m_SynchronizeAngularVelocity: 1
-  m_TeleportEnabled: 1
-  m_TeleportIfDistanceGreaterThan: 10
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
+  m_TeleportIfDistanceGreaterThan: 3
