@@ -194,7 +194,9 @@ GameObject:
   - component: {fileID: 5064107013245906476}
   - component: {fileID: 5064107013245906479}
   - component: {fileID: 8734021259694740546}
+  - component: {fileID: 2604574078899109618}
   - component: {fileID: 4259879659887085663}
+  - component: {fileID: 4740157003977502463}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -297,8 +299,8 @@ Rigidbody2D:
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 1
-  m_Mass: 0.79029816
+  m_UseAutoMass: 0
+  m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
@@ -306,7 +308,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &8734021259694740546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -324,11 +326,29 @@ MonoBehaviour:
   prefixField: -1
   Synchronization: 3
   OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents: []
+  observableSearch: 1
+  ObservedComponents:
+  - {fileID: 2604574078899109618}
+  - {fileID: 4740157003977502463}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &2604574078899109618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5064107013245906472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 0
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!114 &4259879659887085663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -343,3 +363,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rbody: {fileID: 5064107013245906479}
   nickName: {fileID: 5064107011960216388}
+  overrideSpeed: 0
+--- !u!114 &4740157003977502463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5064107013245906472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e7cb724808c322458aa4d15f5035fa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
+  m_TeleportEnabled: 1
+  m_TeleportIfDistanceGreaterThan: 10

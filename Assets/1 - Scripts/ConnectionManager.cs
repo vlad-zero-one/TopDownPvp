@@ -13,9 +13,11 @@ namespace Game
 
         public delegate void ErrorEventHandler(string message);
         public delegate void SuccessEventHandler();
+        public delegate void LeftEventHandler();
 
         public event ErrorEventHandler Error;
         public event SuccessEventHandler JoinedRoom;
+        public event LeftEventHandler LeftRoom;
 
         public void InitConnection()
         {
@@ -115,7 +117,7 @@ namespace Game
         {
             logger.Log($"Player {PhotonNetwork.LocalPlayer.NickName} left room");
 
-            SceneManager.LoadScene(0);
+            LeftRoom?.Invoke();
         }
 
         public void OnRegionListReceived(RegionHandler regionHandler)

@@ -11,6 +11,7 @@ namespace Game.Controllers
         private float range;
 
         public event IMoveController.MoveEventHandler MoveDirective;
+        public event IMoveController.StopEventHandler StopDirective;
 
         public void Init()
         {
@@ -53,7 +54,7 @@ namespace Game.Controllers
         {
             joystickHandler.anchoredPosition = Vector2.zero;
             joystick.anchoredPosition = Vector2.zero;
-            MoveDirective?.Invoke(Vector2.zero);
+            StopDirective?.Invoke();
         }
     }
 }

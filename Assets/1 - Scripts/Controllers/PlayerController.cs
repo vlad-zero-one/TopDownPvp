@@ -10,15 +10,33 @@ namespace Game.Controllers
 
         private float speed;
 
-        public void Init(string nickName, float speed = 5f)
+        private Vector3 moveDirection;
+
+        private bool moving;
+
+        public void Init(string nickName, float speed = 4f)
         {
             this.nickName.text = nickName;
             this.speed = speed;
         }
 
-        public void Move(Vector2 direction)
+        public void StartMove(Vector2 moveDirection)
         {
-            rbody.velocity = direction * speed;
+            this.moveDirection = moveDirection;
+            moving = true;
+        }
+
+        public void StopMove()
+        {
+            moving = false;
+        }
+
+        private void FixedUpdate()
+        {
+            if (moving)
+            {
+                rbody.MovePosition(transform.position + speed * Time.fixedDeltaTime * moveDirection);
+            }
         }
     }
 }
