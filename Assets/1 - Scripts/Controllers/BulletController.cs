@@ -29,8 +29,14 @@ namespace Game.Controllers
             if (player != null && player.photonView.Owner != photonView.Owner)
             {
                 player.Damage();
-                PhotonNetwork.Destroy(gameObject);
+                photonView.RPC("Destroy", RpcTarget.All);
             }
+        }
+
+        [PunRPC]
+        public void Destroy()
+        {
+            Destroy(gameObject);
         }
     }
 }

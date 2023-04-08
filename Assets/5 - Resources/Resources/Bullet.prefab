@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4178978478782074681}
   - component: {fileID: 4109365443514247089}
   - component: {fileID: 7981966348190861765}
-  - component: {fileID: 8916106175429393594}
+  - component: {fileID: -2178761382624087793}
   - component: {fileID: 4886881046935957554}
   m_Layer: 0
   m_Name: Bullet
@@ -147,7 +147,7 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 7981966348190861765}
-  - {fileID: 8916106175429393594}
+  - {fileID: -2178761382624087793}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -167,7 +167,7 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
---- !u!114 &8916106175429393594
+--- !u!114 &-2178761382624087793
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
