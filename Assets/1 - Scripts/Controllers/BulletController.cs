@@ -1,19 +1,17 @@
+using Photon.Pun;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Game.Controllers
 {
-    public class BulletController : MonoBehaviour
+    public class BulletController : MonoBehaviourPun
     {
         [SerializeField] private Rigidbody2D rbody;
 
-        private PlayerController owner;
         private float speed;
         private Vector3 moveDirection;
 
-        public void Shoot(PlayerController owner, Vector2 moveDirection, float speed = 4f)
+        public void Shoot(Vector2 moveDirection, float speed = 4f)
         {
-            this.owner = owner;
             this.speed = speed;
             this.moveDirection = moveDirection.normalized;
 
@@ -28,9 +26,10 @@ namespace Game.Controllers
         private void OnTriggerEnter2D(Collider2D collision)
         {
             var player = collision.gameObject.GetComponent<PlayerController>();
-            if (player != null && player != owner)
+            if (player != null && player.photonView.Owner != photonView.Owner)
             {
                 player.Damage();
+                PhotonNetwork.Destroy(gameObject);
             }
         }
     }

@@ -52,7 +52,7 @@ namespace Game.Controllers
                     Quaternion.identity)
                 .GetComponent<BulletController>();
 
-            bullet.Shoot(player, lastDirection);
+            bullet.Shoot(lastDirection);
         }
 
         private void LoadLobbyScene()

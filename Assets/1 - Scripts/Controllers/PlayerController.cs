@@ -1,9 +1,10 @@
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Game.Controllers
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : MonoBehaviourPun
     {
         [SerializeField] private Rigidbody2D rbody;
         [SerializeField] private Text nickName;
@@ -20,6 +21,14 @@ namespace Game.Controllers
         {
             this.nickName.text = nickName;
             this.speed = speed;
+
+            photonView.RPC("SyncName", RpcTarget.OthersBuffered, nickName);
+        }
+
+        [PunRPC]
+        public void SyncName(string nickName)
+        {
+            this.nickName.text = nickName;
         }
 
         public void StartMove(Vector2 moveDirection)
@@ -36,6 +45,8 @@ namespace Game.Controllers
         public void Damage()
         {
             nickName.text = $"{--hp}";
+
+            photonView.RPC("SyncName", RpcTarget.Others, nickName.text);
         }
 
         private void FixedUpdate()
