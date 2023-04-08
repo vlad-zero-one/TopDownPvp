@@ -10,7 +10,7 @@ namespace Game.Controllers
     {
         [SerializeField] private Button leaveButton;
         [SerializeField] private TouchPadMoveController moveController;
-        [SerializeField] private KeyboardShootController shootController;
+        [SerializeField] private ButtonShootController shootController;
 
         [SerializeField] private PlayerController playerPrefab;
         [SerializeField] private BulletController bulletPrefab;
