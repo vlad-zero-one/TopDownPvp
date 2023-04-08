@@ -378,4 +378,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rbody: {fileID: 5064107013245906479}
+  playerCanvas: {fileID: 5064107012130293041}
   nickName: {fileID: 5064107011960216388}

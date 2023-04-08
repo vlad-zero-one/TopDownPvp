@@ -1,3 +1,4 @@
+using DependencyInjection;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,6 +8,7 @@ namespace Game.Controllers
     public class PlayerController : MonoBehaviourPun
     {
         [SerializeField] private Rigidbody2D rbody;
+        [SerializeField] private Canvas playerCanvas;
         [SerializeField] private Text nickName;
 
         private float speed;
@@ -42,11 +44,10 @@ namespace Game.Controllers
             moving = false;
         }
 
+        [PunRPC]
         public void Damage()
         {
             nickName.text = $"{--hp}";
-
-            photonView.RPC("SyncName", RpcTarget.Others, nickName.text);
         }
 
         private void FixedUpdate()
@@ -58,6 +59,14 @@ namespace Game.Controllers
                 rbody.MovePosition(pos);
 
                 transform.up = pos - lastPos;
+            }
+        }
+
+        private void Update()
+        {
+            if (playerCanvas.transform.up != Vector3.up)
+            {
+                playerCanvas.transform.up = Vector3.up;
             }
         }
     }
