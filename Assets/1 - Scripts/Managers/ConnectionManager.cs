@@ -45,8 +45,7 @@ namespace Game
             var roomOptions = new RoomOptions
             {
                 IsVisible = true,
-                IsOpen = true,
-                MaxPlayers = 5
+                IsOpen = true
             };
 
             PhotonNetwork.CreateRoom(roomName, roomOptions: roomOptions);

@@ -20,6 +20,8 @@ namespace Game.Controllers
 
         private int hp;
 
+        private int coins;
+
         public void Init(string nickName, PlayerSkinsData skinsData, float speed, int health)
         {
             this.speed = speed;
@@ -32,12 +34,14 @@ namespace Game.Controllers
 
             Instantiate(skinsData.GetSkin(skinName), transform).transform.SetSiblingIndex(0);
             
-            photonView.RPC("SyncInit", RpcTarget.OthersBuffered, nickName, skinName);
+            photonView.RPC("SyncInit", RpcTarget.OthersBuffered, nickName, skinName, health);
         }
 
         [PunRPC]
-        public void SyncInit(string nickName, string skinName)
+        public void SyncInit(string nickName, string skinName, int health)
         {
+            this.hp = health;
+
             var skinsData = DI.Get<PlayerSkinsData>();
 
             this.nickName.text = nickName;
@@ -59,6 +63,12 @@ namespace Game.Controllers
         public void Damage()
         {
             nickName.text = $"{--hp}";
+        }
+
+        public void AddCoint()
+        {
+            coins++;
+            Debug.LogError(coins);
         }
 
         private void FixedUpdate()

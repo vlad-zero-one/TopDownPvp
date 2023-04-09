@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game.Views
@@ -12,8 +10,16 @@ namespace Game.Views
         {
             if (collision.gameObject.CompareTag(Tags.Player))
             {
-                Debug.LogError("Enter");
+                Occupied = true;
+            }
+        }
 
+        private void OnTriggerStay2D(Collider2D collision)
+        {
+            if (Occupied) return;
+
+            if (collision.gameObject.CompareTag(Tags.Player))
+            {
                 Occupied = true;
             }
         }
@@ -22,8 +28,6 @@ namespace Game.Views
         {
             if (collision.gameObject.CompareTag(Tags.Player))
             {
-                Debug.LogError("Exit");
-
                 Occupied = false;
             }
         }
