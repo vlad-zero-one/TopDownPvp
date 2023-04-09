@@ -17,19 +17,20 @@ namespace Game.Controllers
         [SerializeField] private PlayerController playerPrefab;
         [SerializeField] private BulletController bulletPrefab;
 
-        [SerializeField] private PlayerSkinsData playerSkins;
-
         private ConnectionManager connectionManager;
         private Logger logger;
 
         private PlayerController player;
         private Vector2 lastDirection = Vector2.up;
+        private PlayerSettings playerSettings;
 
         private void Awake()
         {
             connectionManager = DI.Get<ConnectionManager>();
             logger = DI.Get<Logger>();
-            DI.Add(playerSkins);
+
+            var playerSkins = DI.Get<PlayerSkinsData>();
+            playerSettings = DI.Get<PlayerSettings>();
 
             leaveButton.onClick.AddListener(LeaveRoom);
 
@@ -38,7 +39,7 @@ namespace Game.Controllers
                     Quaternion.identity);
 
             player = playerGO.GetComponent<PlayerController>();
-            player.Init(PhotonNetwork.LocalPlayer.NickName, playerSkins);
+            player.Init(PhotonNetwork.LocalPlayer.NickName, playerSkins, playerSettings.PlayerSpeed, playerSettings.PlayerHealth);
 
             moveController.Init();
             moveController.MoveDirective += MovePlayer;
@@ -57,7 +58,7 @@ namespace Game.Controllers
                     Quaternion.identity)
                 .GetComponent<BulletController>();
 
-            bullet.Shoot(lastDirection);
+            bullet.Shoot(lastDirection, playerSettings.BulletSpeed);
         }
 
         private void LoadLobbyScene()

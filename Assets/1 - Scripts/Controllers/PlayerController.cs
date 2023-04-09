@@ -18,11 +18,12 @@ namespace Game.Controllers
 
         private bool moving;
 
-        private int hp = 10;
+        private int hp;
 
-        public void Init(string nickName, PlayerSkinsData skinsData, float speed = 4f)
+        public void Init(string nickName, PlayerSkinsData skinsData, float speed, int health)
         {
             this.speed = speed;
+            this.hp = health;
 
             this.nickName.color = Color.white;
             this.nickName.text = "YOU";
