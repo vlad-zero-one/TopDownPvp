@@ -2,7 +2,9 @@
 using DependencyInjection;
 using UnityEngine.UI;
 using Photon.Pun;
-using System;
+using Game.Configs;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Game.Controllers
 {
@@ -15,6 +17,8 @@ namespace Game.Controllers
         [SerializeField] private PlayerController playerPrefab;
         [SerializeField] private BulletController bulletPrefab;
 
+        [SerializeField] private PlayerSkinsData playerSkins;
+
         private ConnectionManager connectionManager;
         private Logger logger;
 
@@ -25,15 +29,16 @@ namespace Game.Controllers
         {
             connectionManager = DI.Get<ConnectionManager>();
             logger = DI.Get<Logger>();
+            DI.Add(playerSkins);
 
             leaveButton.onClick.AddListener(LeaveRoom);
 
             var playerGO = PhotonNetwork.Instantiate(playerPrefab.name,
-                    new(UnityEngine.Random.Range(-5, 5), UnityEngine.Random.Range(-5, 5)),
+                    new(Random.Range(-5, 5), Random.Range(-5, 5)),
                     Quaternion.identity);
 
             player = playerGO.GetComponent<PlayerController>();
-            player.Init(PhotonNetwork.LocalPlayer.NickName);
+            player.Init(PhotonNetwork.LocalPlayer.NickName, playerSkins);
 
             moveController.Init();
             moveController.MoveDirective += MovePlayer;

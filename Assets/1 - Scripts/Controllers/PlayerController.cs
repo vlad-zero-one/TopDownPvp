@@ -1,4 +1,5 @@
 using DependencyInjection;
+using Game.Configs;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,18 +20,25 @@ namespace Game.Controllers
 
         private int hp = 10;
 
-        public void Init(string nickName, float speed = 4f)
+        public void Init(string nickName, PlayerSkinsData skinsData, float speed = 4f)
         {
             this.nickName.text = nickName;
             this.speed = speed;
 
-            photonView.RPC("SyncName", RpcTarget.OthersBuffered, nickName);
+            var skinName = skinsData.GetRandomSkinName();
+
+            Instantiate(skinsData.GetSkin(skinName), transform).transform.SetSiblingIndex(0);
+            
+            photonView.RPC("SyncInit", RpcTarget.OthersBuffered, nickName, skinName);
         }
 
         [PunRPC]
-        public void SyncName(string nickName)
+        public void SyncInit(string nickName, string skinName)
         {
+            var skinsData = DI.Get<PlayerSkinsData>();
+
             this.nickName.text = nickName;
+            Instantiate(skinsData.GetSkin(skinName), transform).transform.SetSiblingIndex(0);
         }
 
         public void StartMove(Vector2 moveDirection)

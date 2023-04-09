@@ -175,7 +175,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 1, g: 1, b: 1, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -360,6 +360,7 @@ MonoBehaviour:
   shootController: {fileID: 547389239}
   playerPrefab: {fileID: 4259879659887085663, guid: 645d6b0f5d2c1de47bf9647a2f288867, type: 3}
   bulletPrefab: {fileID: 4886881046935957554, guid: 9a14c7ee49a5d2a4a9f14c86ae384208, type: 3}
+  playerSkins: {fileID: 11400000, guid: d6a9ae5a5da8bc8409eada26445a6373, type: 2}
 --- !u!4 &987793496
 Transform:
   m_ObjectHideFlags: 0

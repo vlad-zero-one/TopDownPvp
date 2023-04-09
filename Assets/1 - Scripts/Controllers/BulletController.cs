@@ -10,7 +10,7 @@ namespace Game.Controllers
         private float speed;
         private Vector3 moveDirection;
 
-        public void Shoot(Vector2 moveDirection, float speed = 4f)
+        public void Shoot(Vector2 moveDirection, float speed = 8f)
         {
             this.speed = speed;
             this.moveDirection = moveDirection.normalized;
