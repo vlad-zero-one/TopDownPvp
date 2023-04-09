@@ -17,6 +17,8 @@ namespace Game.Controllers
         [SerializeField] private PlayerController playerPrefab;
         [SerializeField] private BulletController bulletPrefab;
 
+        [SerializeField] private MapController mapController;
+
         private ConnectionManager connectionManager;
         private Logger logger;
 
@@ -35,7 +37,7 @@ namespace Game.Controllers
             leaveButton.onClick.AddListener(LeaveRoom);
 
             var playerGO = PhotonNetwork.Instantiate(playerPrefab.name,
-                    new(Random.Range(-5, 5), Random.Range(-5, 5)),
+                    mapController.GetSpawnPoint().transform.position,
                     Quaternion.identity);
 
             player = playerGO.GetComponent<PlayerController>();

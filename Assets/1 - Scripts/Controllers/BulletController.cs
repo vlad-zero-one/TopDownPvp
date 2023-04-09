@@ -26,9 +26,9 @@ namespace Game.Controllers
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (!photonView.IsMine) return;
-            if (collision.gameObject.CompareTag("Bullet")) return;
+            if (collision.gameObject.CompareTag(Tags.Bullet)) return;
 
-            if (collision.gameObject.CompareTag("Obstacle"))
+            if (collision.gameObject.CompareTag(Tags.Obstacle))
             {
                 photonView.RPC("Destroy", RpcTarget.All);
                 return;
