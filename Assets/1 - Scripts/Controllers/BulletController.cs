@@ -26,7 +26,7 @@ namespace Game.Controllers
         private void OnTriggerEnter2D(Collider2D collision)
         {
             var player = collision.gameObject.GetComponent<PlayerController>();
-            if (player != null && player.photonView.Owner != photonView.Owner)
+            if (player != null && player.photonView.Owner != photonView.Owner && photonView.IsMine)
             {
                 player.photonView.RPC("Damage", RpcTarget.All);
                 photonView.RPC("Destroy", RpcTarget.All);
