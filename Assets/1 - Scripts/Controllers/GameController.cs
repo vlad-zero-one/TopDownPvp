@@ -23,7 +23,7 @@ namespace Game.Controllers
         private Logger logger;
 
         private PlayerController player;
-        private Vector2 lastDirection;
+        private Vector2 lastDirection = Vector2.up;
 
         private void Awake()
         {

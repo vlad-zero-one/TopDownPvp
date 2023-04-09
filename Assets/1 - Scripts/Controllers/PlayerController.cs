@@ -22,8 +22,10 @@ namespace Game.Controllers
 
         public void Init(string nickName, PlayerSkinsData skinsData, float speed = 4f)
         {
-            this.nickName.text = nickName;
             this.speed = speed;
+
+            this.nickName.color = Color.white;
+            this.nickName.text = "YOU";
 
             var skinName = skinsData.GetRandomSkinName();
 
