@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Bullet
   - Obstacle
+  - Coin
   layers:
   - Default
   - TransparentFX

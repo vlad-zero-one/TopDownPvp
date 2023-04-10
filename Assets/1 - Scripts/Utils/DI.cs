@@ -36,5 +36,10 @@ namespace DependencyInjection
         {
             return Injections.ContainsKey(typeof(T));
         }
+
+        public static void Remove<T>(T obj)
+        {
+            Injections.Remove(obj.GetType());
+        }
     }
 }

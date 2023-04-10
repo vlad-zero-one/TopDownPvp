@@ -3,7 +3,6 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using DependencyInjection;
-using UnityEngine.SceneManagement;
 
 namespace Game
 {
@@ -14,10 +13,14 @@ namespace Game
         public delegate void ErrorEventHandler(string message);
         public delegate void SuccessEventHandler();
         public delegate void LeftEventHandler();
+        public delegate void NewPlayerEventHandler(Player newPlayer);
+        public delegate void MasterChangedEventHandler(Player newMaster);
 
         public event ErrorEventHandler Error;
         public event SuccessEventHandler JoinedRoom;
         public event LeftEventHandler LeftRoom;
+        public event NewPlayerEventHandler NewPlayerJoined;
+        public event MasterChangedEventHandler NewMaster;
 
         public void InitConnection()
         {
@@ -128,6 +131,8 @@ namespace Game
         public void OnPlayerEnteredRoom(Player newPlayer)
         {
             logger.Log($"Player {newPlayer} entered the room");
+
+            NewPlayerJoined?.Invoke(newPlayer);
         }
 
         public void OnPlayerLeftRoom(Player otherPlayer)
@@ -152,6 +157,8 @@ namespace Game
         public void OnMasterClientSwitched(Player newMasterClient)
         {
             logger.Log($"{newMasterClient.NickName} is master client now");
+
+            NewMaster?.Invoke(newMasterClient);
         }
 
         #endregion

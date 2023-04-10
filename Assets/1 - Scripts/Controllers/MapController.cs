@@ -1,8 +1,8 @@
+using DependencyInjection;
 using Game.Views;
 using Photon.Pun;
-using System.Collections;
+using Photon.Realtime;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Game.Controllers
@@ -18,13 +18,39 @@ namespace Game.Controllers
 
         private void Awake()
         {
+            DI.Add(this);
+
+            coins = new();
+
             if (PhotonNetwork.IsMasterClient)
             {
-                SpawnCoin();
+                SpawnCoins();
             }
         }
 
-        private void SpawnCoin()
+        public void AddCoin(CoinView coin)
+        {
+            coins.Add(coin);
+        }
+
+        private void SpawnCoins()
+        {
+            coins.Add(
+                PhotonNetwork
+                .InstantiateRoomObject("Coin", GetCoinPoint(), Quaternion.identity)
+                .GetComponent<CoinView>());
+        }
+
+        public void SyncCoins(Player player)
+        {
+            foreach(var coin in coins)
+            {
+                var pos = coin.transform.position;
+                coin.photonView.RPC("MoveCoin", RpcTarget.Others, pos.x, pos.y);
+            }
+        }
+
+        public Vector2 GetCoinPoint()
         {
             var index = Random.Range(0, coinPoints.Count);
             if (coinPoints[index].Occupied)
@@ -37,55 +63,17 @@ namespace Game.Controllers
                 }
             }
 
-            var coin = PhotonNetwork
-                .Instantiate("Coin", coinPoints[index].transform.position, Quaternion.identity)
-                .GetComponent<CoinView>();
-
-            coin.Collected += Move;
+            return coinPoints[index].transform.position;
         }
-
-        private void Move(CoinView coin)
-        {
-            var index = Random.Range(0, coinPoints.Count);
-            if (coinPoints[index].Occupied)
-            {
-                // limit the number of attempts to spawn in an unoccupied slot, in case each slot is occupied
-                for (var i = 0; i < 5; i++)
-                {
-                    index = Random.Range(0, coinPoints.Count);
-                    if (!coinPoints[index].Occupied) break;
-                }
-            }
-
-            coin.transform.position = coinPoints[index].transform.position;
-        }
-
-        //[PunRPC]
-        //private void SpawnCoin(CoinView sender)
-        //{
-        //    sender.Collected -= SpawnCoin;
-
-        //    var index = Random.Range(0, coinPoints.Count);
-        //    if (coinPoints[index].Occupied)
-        //    {
-        //        // limit the number of attempts to spawn in an unoccupied slot, in case each slot is occupied
-        //        for (var i = 0; i < 5; i++)
-        //        {
-        //            index = Random.Range(0, coinPoints.Count);
-        //            if (!coinPoints[index].Occupied) break;
-        //        }
-        //    }
-
-        //    var coin = PhotonNetwork
-        //        .Instantiate("Coin", coinPoints[index].transform.position, Quaternion.identity)
-        //        .GetComponent<CoinView>();
-
-        //    coin.Collected += SpawnCoin;
-        //}
 
         public MapPoint GetSpawnPoint()
         {
             return spawnPoints[Random.Range(0, spawnPoints.Count)];
+        }
+
+        private void OnDestroy()
+        {
+            DI.Remove(this);
         }
     }
 }

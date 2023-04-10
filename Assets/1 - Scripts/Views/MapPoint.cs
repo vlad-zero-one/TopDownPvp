@@ -8,17 +8,8 @@ namespace Game.Views
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.gameObject.CompareTag(Tags.Player))
-            {
-                Occupied = true;
-            }
-        }
-
-        private void OnTriggerStay2D(Collider2D collision)
-        {
-            if (Occupied) return;
-
-            if (collision.gameObject.CompareTag(Tags.Player))
+            if (collision.gameObject.CompareTag(Tags.Player)
+                || collision.gameObject.CompareTag(Tags.Coin))
             {
                 Occupied = true;
             }
@@ -26,9 +17,21 @@ namespace Game.Views
 
         private void OnTriggerExit2D(Collider2D collision)
         {
-            if (collision.gameObject.CompareTag(Tags.Player))
+            if (collision.gameObject.CompareTag(Tags.Player)
+                || collision.gameObject.CompareTag(Tags.Coin))
             {
                 Occupied = false;
+            }
+        }
+
+        private void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.C))
+            {
+                if (Occupied)
+                {
+                    Debug.LogError($"! {transform.position}");
+                }
             }
         }
     }

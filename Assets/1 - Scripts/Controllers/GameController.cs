@@ -3,8 +3,7 @@ using DependencyInjection;
 using UnityEngine.UI;
 using Photon.Pun;
 using Game.Configs;
-using System.Collections.Generic;
-using System.IO;
+using Photon.Realtime;
 
 namespace Game.Controllers
 {
@@ -51,6 +50,24 @@ namespace Game.Controllers
             shootController.ShootDirective += Shoot;
 
             connectionManager.LeftRoom += LoadLobbyScene;
+            connectionManager.NewMaster += SyncCoinsForNewPlayer;
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                connectionManager.NewPlayerJoined += mapController.SyncCoins;
+            }
+        }
+
+        private void SyncCoinsForNewPlayer(Player newMaster)
+        {
+            if (newMaster == PhotonNetwork.LocalPlayer)
+            {
+                connectionManager.NewPlayerJoined += mapController.SyncCoins;
+            }
+            else
+            {
+                connectionManager.NewPlayerJoined -= mapController.SyncCoins;
+            }
         }
 
         private void Shoot()
@@ -89,6 +106,12 @@ namespace Game.Controllers
             moveController.MoveDirective -= MovePlayer;
             moveController.StopDirective -= StopPlayer;
             connectionManager.LeftRoom -= LoadLobbyScene;
+            connectionManager.NewMaster -= SyncCoinsForNewPlayer;
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                connectionManager.NewPlayerJoined -= mapController.SyncCoins;
+            }
         }
     }
 }
