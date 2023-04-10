@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 namespace Game.Controllers
@@ -7,8 +8,10 @@ namespace Game.Controllers
     {
         [SerializeField] private Rigidbody2D rbody;
 
-        private float speed;
+        private float speed = 8f;
         private Vector3 moveDirection;
+
+        public Player Owner { get; private set; }
 
         public void Shoot(Vector2 moveDirection, float speed = 8f)
         {
@@ -18,27 +21,39 @@ namespace Game.Controllers
             transform.up = moveDirection;
         }
 
+        public void InitializeBullet(Player owner, Vector3 direction, float lag)
+        {
+            Owner = owner;
+
+            transform.up = direction;
+
+            //Rigidbody rigidbody = GetComponent<Rigidbody>();
+            rbody.velocity = direction.normalized * speed;
+            rbody.position += rbody.velocity * lag;
+        }
+
         private void FixedUpdate()
         {
-            rbody.MovePosition(transform.position + speed * Time.fixedDeltaTime * moveDirection);
+            ////rbody.MovePosition(transform.position + speed * Time.fixedDeltaTime * moveDirection);
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (!photonView.IsMine) return;
             if (collision.gameObject.CompareTag(Tags.Bullet)) return;
 
             if (collision.gameObject.CompareTag(Tags.Obstacle))
             {
-                photonView.RPC("Destroy", RpcTarget.All);
+                Destroy(gameObject);
                 return;
             }
 
             var player = collision.gameObject.GetComponent<PlayerView>();
-            if (player != null && player.photonView.Owner != photonView.Owner)
+            if (player != null && player.photonView.Owner != Owner)
             {
-                player.photonView.RPC("Damage", RpcTarget.All);
-                photonView.RPC("Destroy", RpcTarget.All);
+                if (!player.photonView.IsMine) return;
+
+                player.Damage();
+                Destroy(gameObject);
             }
         }
 

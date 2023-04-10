@@ -68,12 +68,12 @@ namespace Game.Controllers
 
         private void Shoot()
         {
-            var bullet = PhotonNetwork.Instantiate(bulletPrefab.name,
-                    player.transform.position,
-                    Quaternion.identity)
-                .GetComponent<BulletView>();
-
-            bullet.Shoot(lastDirection, playerSettings.BulletSpeed);
+            player.photonView.RPC("Shoot",
+                RpcTarget.AllViaServer,
+                player.transform.position.x,
+                player.transform.position.y,
+                lastDirection.x,
+                lastDirection.y);
         }
 
         private void LoadLobbyScene()
@@ -83,8 +83,11 @@ namespace Game.Controllers
 
         private void MovePlayer(Vector2 direction)
         {
-            lastDirection = direction;
-            player.StartMove(direction);
+            if (direction != Vector2.zero)
+            {
+                lastDirection = direction;
+                player.StartMove(direction);
+            }
         }
 
         private void StopPlayer()

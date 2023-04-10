@@ -12,6 +12,8 @@ namespace Game.Controllers
         [SerializeField] private Canvas playerCanvas;
         [SerializeField] private Text nickName;
 
+        [SerializeField] private BulletView bulletPrefab;
+
         private float speed;
 
         private Vector3 moveDirection;
@@ -48,6 +50,25 @@ namespace Game.Controllers
             Instantiate(skinsData.GetSkin(skinName), transform).transform.SetSiblingIndex(0);
         }
 
+        //public void Shoot()
+        //{
+        //    var bullet = PhotonNetwork.Instantiate(bulletPrefab.name,
+        //            player.transform.position,
+        //            Quaternion.identity)
+        //        .GetComponent<BulletView>();
+
+        //    bullet.Shoot(lastDirection, playerSettings.BulletSpeed);
+        //}
+
+        [PunRPC]
+        public void Shoot(float positionX, float positionY, float directionX, float directionY, PhotonMessageInfo info)
+        {
+            var lag = (float)(PhotonNetwork.Time - info.SentServerTime);
+
+            var bullet = Instantiate(bulletPrefab, new(positionX, positionY), Quaternion.identity);
+            bullet.InitializeBullet(photonView.Owner, new(directionX, directionY), Mathf.Abs(lag));
+        }
+
         public void StartMove(Vector2 moveDirection)
         {
             this.moveDirection = moveDirection;
@@ -78,7 +99,10 @@ namespace Game.Controllers
                 var pos = lastPos + speed * Time.fixedDeltaTime * moveDirection;
                 rbody.MovePosition(pos);
 
-                transform.up = pos - lastPos;
+                if (moveDirection.normalized != Vector3.down)
+                {
+                    transform.up = moveDirection;
+                }
             }
         }
 

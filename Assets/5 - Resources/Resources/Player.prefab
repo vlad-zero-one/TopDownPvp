@@ -311,6 +311,7 @@ MonoBehaviour:
   rbody: {fileID: 5064107013245906479}
   playerCanvas: {fileID: 5064107012130293041}
   nickName: {fileID: 5064107011960216388}
+  bulletPrefab: {fileID: 4886881046935957554, guid: 9a14c7ee49a5d2a4a9f14c86ae384208, type: 3}
 --- !u!61 &2753338316418021732
 BoxCollider2D:
   m_ObjectHideFlags: 0
