@@ -14,40 +14,6 @@ namespace Game.Controllers
 
         private List<CoinView> coins;
 
-        private void Awake()
-        {
-            DI.Add(this);
-
-            coins = new();
-
-            if (PhotonNetwork.IsMasterClient)
-            {
-                SpawnCoins();
-            }
-        }
-
-        public void AddCoin(CoinView coin)
-        {
-            coins.Add(coin);
-        }
-
-        private void SpawnCoins()
-        {
-            coins.Add(
-                PhotonNetwork
-                .InstantiateRoomObject("Coin", GetCoinPoint(), Quaternion.identity)
-                .GetComponent<CoinView>());
-        }
-
-        public void SyncCoins(Player player)
-        {
-            foreach(var coin in coins)
-            {
-                var pos = coin.transform.position;
-                coin.photonView.RPC("MoveCoin", RpcTarget.Others, pos.x, pos.y);
-            }
-        }
-
         public Vector2 GetCoinPoint()
         {
             var index = Random.Range(0, coinPoints.Count);
@@ -67,6 +33,40 @@ namespace Game.Controllers
         public MapPoint GetSpawnPoint()
         {
             return spawnPoints[Random.Range(0, spawnPoints.Count)];
+        }
+
+        public void AddCoin(CoinView coin)
+        {
+            coins.Add(coin);
+        }
+
+        public void SyncCoins(Player player)
+        {
+            foreach (var coin in coins)
+            {
+                var pos = coin.transform.position;
+                coin.photonView.RPC("MoveCoin", player, pos.x, pos.y);
+            }
+        }
+
+        private void SpawnCoins()
+        {
+            coins.Add(
+                PhotonNetwork
+                .InstantiateRoomObject(NetworkPrefabs.Coin, GetCoinPoint(), Quaternion.identity)
+                .GetComponent<CoinView>());
+        }
+
+        private void Awake()
+        {
+            DI.Add(this);
+
+            coins = new();
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                SpawnCoins();
+            }
         }
 
         private void OnDestroy()

@@ -13,8 +13,6 @@ namespace Game.Controllers
         [SerializeField] private TouchPadMoveController moveController;
         [SerializeField] private ButtonShootController shootController;
 
-        [SerializeField] private PlayerView playerPrefab;
-
         [SerializeField] private MapController mapController;
 
         private ConnectionManager connectionManager;
@@ -28,22 +26,29 @@ namespace Game.Controllers
             connectionManager = DI.Get<ConnectionManager>();
             logger = DI.Get<Logger>();
 
-            leaveButton.onClick.AddListener(LeaveRoom);
 
             object[] data = new object[1];
             data[0] = DI.Get<PlayerAppearanceData>().GetRandomSkinName();
 
-            player = PhotonNetwork.Instantiate(playerPrefab.name,
+            player = PhotonNetwork.Instantiate(NetworkPrefabs.Player,
                     mapController.GetSpawnPoint().transform.position,
                     Quaternion.identity,
                     data: data)
                 .GetComponent<PlayerView>();
 
             moveController.Init();
+            shootController.Init();
+
+            InitSubscribtions();
+        }
+
+        private void InitSubscribtions()
+        {
+            leaveButton.onClick.AddListener(LeaveRoom);
+
             moveController.MoveDirective += MovePlayer;
             moveController.StopDirective += StopPlayer;
 
-            shootController.Init();
             shootController.ShootDirective += Shoot;
 
             connectionManager.LeftRoom += LoadLobbyScene;

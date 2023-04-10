@@ -11,16 +11,15 @@ namespace Game
         private Logger logger;
 
         public delegate void ErrorEventHandler(string message);
-        public delegate void SuccessEventHandler();
-        public delegate void LeftEventHandler();
-        public delegate void NewPlayerEventHandler(Player newPlayer);
-        public delegate void MasterChangedEventHandler(Player newMaster);
+        public delegate void EventHandler();
+        public delegate void PlayerEventHandler(Player newPlayer);
 
         public event ErrorEventHandler Error;
-        public event SuccessEventHandler JoinedRoom;
-        public event LeftEventHandler LeftRoom;
-        public event NewPlayerEventHandler NewPlayerJoined;
-        public event MasterChangedEventHandler NewMaster;
+        public event EventHandler JoinedRoom;
+        public event EventHandler LeftRoom;
+        public event PlayerEventHandler NewPlayerJoined;
+        public event PlayerEventHandler NewMaster;
+        public event EventHandler ConnectedToMaster;
 
         public void InitConnection()
         {
@@ -64,6 +63,8 @@ namespace Game
         public void OnConnectedToMaster()
         {
             logger.Log($"Player {PhotonNetwork.LocalPlayer.NickName} is connected to master");
+
+            ConnectedToMaster?.Invoke();
         }
 
         public void OnCreatedRoom()
@@ -140,19 +141,9 @@ namespace Game
             logger.Log($"Player {otherPlayer} left the room");
         }
 
-        public void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
-        {
-            logger.Log($"Room properties update {propertiesThatChanged}");
-        }
+        public void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged) { }
 
-        public void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
-        {
-            logger.Log($"Player properties update {targetPlayer.NickName}");
-            foreach(var prop in changedProps)
-            {
-                logger.Log($"Property {prop.Key}, value {prop.Value}");
-            }
-        }
+        public void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps) { }
 
         public void OnMasterClientSwitched(Player newMasterClient)
         {

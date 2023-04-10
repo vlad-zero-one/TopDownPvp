@@ -9,11 +9,13 @@ namespace Game.Views
     {
         private MapController mapController;
 
-        public delegate void CollectedEventHandler(CoinView sender);
-        public event CollectedEventHandler Collected;
-
         private MapController MapController => 
             mapController = mapController != null ? mapController : DI.Get<MapController>();
+
+        public void OnPhotonInstantiate(PhotonMessageInfo info)
+        {
+            MapController.AddCoin(this);
+        }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
@@ -28,11 +30,6 @@ namespace Game.Views
                     photonView.RPC("MoveCoin", RpcTarget.AllViaServer, point.x, point.y);
                 }
             }
-        }
-
-        public void OnPhotonInstantiate(PhotonMessageInfo info)
-        {
-            MapController.AddCoin(this);
         }
 
         [PunRPC]

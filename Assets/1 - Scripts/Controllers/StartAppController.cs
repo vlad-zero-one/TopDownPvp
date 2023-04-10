@@ -19,13 +19,23 @@ namespace Game.Controllers
             logger.Init();
 
             connectionManager = new();
+            connectionManager.ConnectedToMaster += SwitchScene;
+
             PhotonNetwork.AddCallbackTarget(connectionManager);
             connectionManager.InitConnection();
 
             DI.Add(playerSettings);
             DI.Add(playerAppearanceData);
+        }
 
-            SceneManager.LoadSceneAsync(Scenes.LobbyScene);
+        private void SwitchScene()
+        {
+            SceneManager.LoadScene(Scenes.LobbyScene);
+        }
+
+        private void OnDestroy()
+        {
+            connectionManager.ConnectedToMaster -= SwitchScene;
         }
     }
 }
