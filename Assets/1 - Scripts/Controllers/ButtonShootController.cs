@@ -8,10 +8,14 @@ namespace Game.Controllers
     {
         [SerializeField] private Button shootButton;
 
+        private float shootCooldown;
+
         public event IShootController.ShootEventHandler ShootDirective;
 
-        public void Init()
+        public void Init(float shootCooldown)
         {
+            this.shootCooldown = shootCooldown;
+
             shootButton.onClick.AddListener(Shoot);
         }
 
@@ -35,7 +39,7 @@ namespace Game.Controllers
         private IEnumerator Cooldown()
         {
             shootButton.enabled = false;
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(shootCooldown);
             shootButton.enabled = true;
         }
 

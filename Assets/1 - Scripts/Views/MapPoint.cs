@@ -23,16 +23,5 @@ namespace Game.Views
                 Occupied = false;
             }
         }
-
-        private void Update()
-        {
-            if(Input.GetKeyDown(KeyCode.C))
-            {
-                if (Occupied)
-                {
-                    Debug.LogError($"! {transform.position}");
-                }
-            }
-        }
     }
 }

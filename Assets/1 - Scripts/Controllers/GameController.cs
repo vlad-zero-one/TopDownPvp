@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Game.Configs;
 using Photon.Realtime;
+using UnityEngine.SceneManagement;
 
 namespace Game.Controllers
 {
@@ -26,7 +27,6 @@ namespace Game.Controllers
             connectionManager = DI.Get<ConnectionManager>();
             logger = DI.Get<Logger>();
 
-
             object[] data = new object[1];
             data[0] = DI.Get<PlayerAppearanceData>().GetRandomSkinName();
 
@@ -37,7 +37,7 @@ namespace Game.Controllers
                 .GetComponent<PlayerView>();
 
             moveController.Init();
-            shootController.Init();
+            shootController.Init(DI.Get<PlayerSettings>().ShootCooldown);
 
             InitSubscribtions();
         }
@@ -80,7 +80,7 @@ namespace Game.Controllers
 
         private void LoadLobbyScene()
         {
-            PhotonNetwork.LoadLevel(Scenes.LobbyScene);
+            SceneManager.LoadScene(Scenes.LobbyScene);
         }
 
         private void MovePlayer(Vector2 direction)

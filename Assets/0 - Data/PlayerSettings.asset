@@ -15,3 +15,4 @@ MonoBehaviour:
   playerSpeed: 4
   playerHealth: 10
   bulletSpeed: 8
+  shootCooldown: 1
