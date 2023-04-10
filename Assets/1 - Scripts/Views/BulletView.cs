@@ -8,20 +8,11 @@ namespace Game.Controllers
     {
         [SerializeField] private Rigidbody2D rbody;
 
-        private float speed = 8f;
         private Vector3 moveDirection;
 
         public Player Owner { get; private set; }
 
-        public void Shoot(Vector2 moveDirection, float speed = 8f)
-        {
-            this.speed = speed;
-            this.moveDirection = moveDirection.normalized;
-
-            transform.up = moveDirection;
-        }
-
-        public void InitializeBullet(Player owner, Vector3 direction, float lag)
+        public void Init(Player owner, Vector3 direction, float speed, float lag)
         {
             Owner = owner;
 

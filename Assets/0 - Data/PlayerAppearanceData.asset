@@ -9,9 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4afc21873e2490d40b8c6eb2e55f5987, type: 3}
-  m_Name: PlayerSkinsData
+  m_Script: {fileID: 11500000, guid: 58a1e83134ccdbb4e805f472cc50e4b0, type: 3}
+  m_Name: PlayerAppearanceData
   m_EditorClassIdentifier: 
+  playerNameReplacement: YOU
+  playerNameColor: {r: 1, g: 1, b: 1, a: 1}
+  enemyNameColor: {r: 1, g: 0, b: 0, a: 1}
   folderName: Tanks
   assetNames:
   - HeavyTankA

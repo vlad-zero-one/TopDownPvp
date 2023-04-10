@@ -10,7 +10,7 @@ namespace Game.Controllers
     {
         [SerializeField] private Logger logger;
         [SerializeField] private PlayerSettings playerSettings;
-        [SerializeField] private PlayerSkinsData playerSkinsData;
+        [SerializeField] private PlayerAppearanceData playerAppearanceData;
 
         private ConnectionManager connectionManager;
 
@@ -23,7 +23,7 @@ namespace Game.Controllers
             connectionManager.InitConnection();
 
             DI.Add(playerSettings);
-            DI.Add(playerSkinsData);
+            DI.Add(playerAppearanceData);
 
             SceneManager.LoadSceneAsync(Scenes.LobbyScene);
         }

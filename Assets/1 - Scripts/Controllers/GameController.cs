@@ -31,7 +31,7 @@ namespace Game.Controllers
             leaveButton.onClick.AddListener(LeaveRoom);
 
             object[] data = new object[1];
-            data[0] = DI.Get<PlayerSkinsData>().GetRandomSkinName();
+            data[0] = DI.Get<PlayerAppearanceData>().GetRandomSkinName();
 
             player = PhotonNetwork.Instantiate(playerPrefab.name,
                     mapController.GetSpawnPoint().transform.position,

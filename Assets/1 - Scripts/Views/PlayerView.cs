@@ -14,6 +14,7 @@ namespace Game.Controllers
 
         [SerializeField] private BulletView bulletPrefab;
 
+        private PlayerSettings playerSettings;
         private float speed;
 
         private Vector3 moveDirection;
@@ -28,23 +29,24 @@ namespace Game.Controllers
         {
             var skinName = (string) info.photonView.InstantiationData[0];
 
-            var skinsData = DI.Get<PlayerSkinsData>();
-            var playerSettings = DI.Get<PlayerSettings>();
+            var appearanceData = DI.Get<PlayerAppearanceData>();
+            playerSettings = DI.Get<PlayerSettings>();
 
-            this.speed = playerSettings.PlayerSpeed;
-            this.hp = playerSettings.PlayerHealth;
+            speed = playerSettings.PlayerSpeed;
+            hp = playerSettings.PlayerHealth;
 
             if (photonView.IsMine)
             {
-                nickName.color = Color.white;
-                nickName.text = "YOU";
+                nickName.color = appearanceData.PlayerNameColor;
+                nickName.text = appearanceData.PlayerNameReplacement;
             }
             else
             {
+                nickName.color = appearanceData.EnemyNameColor;
                 nickName.text = photonView.Owner.NickName;
             }
 
-            Instantiate(skinsData.GetSkin(skinName), transform).transform.SetSiblingIndex(0);
+            Instantiate(appearanceData.GetSkin(skinName), transform).transform.SetSiblingIndex(0);
         }
 
         [PunRPC]
@@ -53,7 +55,10 @@ namespace Game.Controllers
             var lag = (float)(PhotonNetwork.Time - info.SentServerTime);
 
             var bullet = Instantiate(bulletPrefab, new(positionX, positionY), Quaternion.identity);
-            bullet.InitializeBullet(photonView.Owner, new(directionX, directionY), Mathf.Abs(lag));
+            bullet.Init(photonView.Owner, 
+                new(directionX, directionY),
+                playerSettings.BulletSpeed,
+                Mathf.Abs(lag));
         }
 
         public void StartMove(Vector2 moveDirection)

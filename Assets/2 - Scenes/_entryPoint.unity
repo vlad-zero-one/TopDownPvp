@@ -408,7 +408,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   logger: {fileID: 285473042}
   playerSettings: {fileID: 11400000, guid: 4a49f9d30cd47804b9bd63d2873fe301, type: 2}
-  playerSkinsData: {fileID: 11400000, guid: d6a9ae5a5da8bc8409eada26445a6373, type: 2}
+  playerAppearanceData: {fileID: 11400000, guid: e41dfff8fb8431242861c59ddeef5495, type: 2}
 --- !u!1 &1147958654
 GameObject:
   m_ObjectHideFlags: 0
