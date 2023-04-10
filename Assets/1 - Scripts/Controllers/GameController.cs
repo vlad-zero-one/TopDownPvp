@@ -16,6 +16,7 @@ namespace Game.Controllers
         [SerializeField] private ButtonShootController shootController;
 
         [SerializeField] private MapController mapController;
+        [SerializeField] private EndBattleScreenController endBattleScreen;
 
         private ConnectionManager connectionManager;
         private Logger logger;
@@ -55,6 +56,8 @@ namespace Game.Controllers
             connectionManager.LeftRoom += LoadLobbyScene;
             connectionManager.NewMaster += SyncCoinsForNewPlayer;
 
+            player.Die += Die;
+
             if (PhotonNetwork.IsMasterClient)
             {
                 connectionManager.NewPlayerJoined += mapController.SyncCoins;
@@ -67,6 +70,13 @@ namespace Game.Controllers
             {
                 connectionManager.NewPlayerJoined += mapController.SyncCoins;
             }
+        }
+
+        private void Die()
+        {
+            endBattleScreen.Show(false, player.Coins);
+
+            //destroy
         }
 
         private void Shoot()
@@ -109,8 +119,13 @@ namespace Game.Controllers
 
             moveController.MoveDirective -= MovePlayer;
             moveController.StopDirective -= StopPlayer;
+
+            shootController.ShootDirective -= Shoot;
+
             connectionManager.LeftRoom -= LoadLobbyScene;
             connectionManager.NewMaster -= SyncCoinsForNewPlayer;
+
+            player.Die -= Die;
 
             if (PhotonNetwork.IsMasterClient)
             {

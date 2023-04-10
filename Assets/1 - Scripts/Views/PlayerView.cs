@@ -23,7 +23,10 @@ namespace Game.Views
 
         private int hp;
 
-        private int coins;
+        public delegate void DieEventHandler();
+        public event DieEventHandler Die;
+
+        public int Coins { get; private set; }
 
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
@@ -76,11 +79,16 @@ namespace Game.Views
         private void Damage()
         {
             nickName.text = $"{--hp}";
+
+            if (hp <= 0)
+            {
+                Die?.Invoke();
+            }
         }
 
         public void AddCoint()
         {
-            coins++;
+            Coins++;
         }
 
         private void FixedUpdate()
