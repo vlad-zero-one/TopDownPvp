@@ -3,12 +3,14 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using DependencyInjection;
+using Game.Configs;
 
 namespace Game
 {
     public class ConnectionManager : IMatchmakingCallbacks, IConnectionCallbacks, IInRoomCallbacks
     {
         private Logger logger;
+        private int countOfPlayersToStart;
 
         public delegate void ErrorEventHandler(string message);
         public delegate void EventHandler();
@@ -21,13 +23,16 @@ namespace Game
         public event PlayerEventHandler NewMaster;
         public event EventHandler ConnectedToMaster;
 
+        public event EventHandler EnoughPlayersToStart;
+
         public void InitConnection()
         {
-            PhotonNetwork.NickName = "Player " + Random.Range(0, 9999);
+            PhotonNetwork.NickName = "Player" + Random.Range(0, 9999);
             PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.ConnectUsingSettings();
 
             logger = DI.Get<Logger>();
+            countOfPlayersToStart = DI.Get<GameSettings>().MinPlayersForGame;
 
             DI.Add(this);
         }
@@ -103,6 +108,11 @@ namespace Game
             logger.Log($"{PhotonNetwork.MasterClient.NickName} is master client");
 
             JoinedRoom?.Invoke();
+
+            if (PhotonNetwork.CurrentRoom.PlayerCount == countOfPlayersToStart)
+            {
+                EnoughPlayersToStart?.Invoke();
+            }
         }
 
         public void OnJoinRandomFailed(short returnCode, string message)
@@ -134,6 +144,11 @@ namespace Game
             logger.Log($"Player {newPlayer} entered the room");
 
             NewPlayerJoined?.Invoke(newPlayer);
+
+            if (PhotonNetwork.CurrentRoom.PlayerCount == countOfPlayersToStart)
+            {
+                EnoughPlayersToStart?.Invoke();
+            }
         }
 
         public void OnPlayerLeftRoom(Player otherPlayer)

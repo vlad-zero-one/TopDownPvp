@@ -4,13 +4,13 @@ using UnityEngine.UI;
 using DependencyInjection;
 using Photon.Pun;
 using WebSocketSharp;
+using UnityEngine.SceneManagement;
+using Game.Configs;
 
 namespace Game.Controllers
 {
     public class LobbyController : MonoBehaviour
     {
-        private const float AlertTime = 2.5f;
-
         [SerializeField] private InputField newRoomName;
         [SerializeField] private Button createRoomButton;
 
@@ -22,20 +22,22 @@ namespace Game.Controllers
         private ConnectionManager connectionManager;
 
         private Coroutine alertRoutine;
+        private float alertTime;
 
         private void Awake()
         {
             connectionManager = DI.Get<ConnectionManager>();
+            alertTime = DI.Get<GameSettings>().AlertShowTime;
 
             InitButtons();
 
             connectionManager.Error += ShowAlert;
-            connectionManager.JoinedRoom += LoadGameScene;
+            connectionManager.EnoughPlayersToStart += LoadGameScene;
         }
 
         private void LoadGameScene()
         {
-            PhotonNetwork.LoadLevel(Scenes.GameScene);
+            SceneManager.LoadScene(Scenes.GameScene);
         }
 
         private void InitButtons()
@@ -83,7 +85,7 @@ namespace Game.Controllers
         private IEnumerator ShowAlert()
         {
             alertTextObject.enabled = true;
-            yield return new WaitForSeconds(AlertTime);
+            yield return new WaitForSeconds(alertTime);
             alertTextObject.enabled = false;
             alertRoutine = null;
         }

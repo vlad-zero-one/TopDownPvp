@@ -1,4 +1,5 @@
 using DependencyInjection;
+using Game.Configs;
 using Game.Views;
 using Photon.Pun;
 using Photon.Realtime;
@@ -49,23 +50,26 @@ namespace Game.Controllers
             }
         }
 
-        private void SpawnCoins()
-        {
-            coins.Add(
-                PhotonNetwork
-                .InstantiateRoomObject(NetworkPrefabs.Coin, GetCoinPoint(), Quaternion.identity)
-                .GetComponent<CoinView>());
-        }
-
         private void Awake()
         {
             DI.Add(this);
-
+            var numberOfCoins = DI.Get<GameSettings>().CoinsOnField;
             coins = new();
 
             if (PhotonNetwork.IsMasterClient)
             {
-                SpawnCoins();
+                SpawnCoins(numberOfCoins);
+            }
+        }
+
+        private void SpawnCoins(int coinsAmount)
+        {
+            for (var i = 0; i < coinsAmount; i++)
+            {
+                coins.Add(
+                  PhotonNetwork
+                  .InstantiateRoomObject(NetworkPrefabs.Coin, GetCoinPoint(), Quaternion.identity)
+                  .GetComponent<CoinView>());
             }
         }
 

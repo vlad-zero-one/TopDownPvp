@@ -11,11 +11,16 @@ namespace Game.Controllers
         [SerializeField] private Logger logger;
         [SerializeField] private PlayerSettings playerSettings;
         [SerializeField] private PlayerAppearanceData playerAppearanceData;
+        [SerializeField] private GameSettings gameSettings;
 
         private ConnectionManager connectionManager;
 
         private void Awake()
         {
+            DI.Add(playerSettings);
+            DI.Add(playerAppearanceData);
+            DI.Add(gameSettings);
+
             logger.Init();
 
             connectionManager = new();
@@ -23,9 +28,6 @@ namespace Game.Controllers
 
             PhotonNetwork.AddCallbackTarget(connectionManager);
             connectionManager.InitConnection();
-
-            DI.Add(playerSettings);
-            DI.Add(playerAppearanceData);
         }
 
         private void SwitchScene()
