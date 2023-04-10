@@ -2,7 +2,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 
-namespace Game.Controllers
+namespace Game.Views
 {
     public class BulletView : MonoBehaviourPun
     {

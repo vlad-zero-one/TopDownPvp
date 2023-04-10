@@ -2,7 +2,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using DependencyInjection;
-using Photon.Pun;
 using WebSocketSharp;
 using UnityEngine.SceneManagement;
 using Game.Configs;
@@ -32,12 +31,15 @@ namespace Game.Controllers
             InitButtons();
 
             connectionManager.Error += ShowAlert;
-            connectionManager.EnoughPlayersToStart += LoadGameScene;
+            connectionManager.JoinedRoom += LoadLoadingScene;
         }
 
-        private void LoadGameScene()
+        private void LoadLoadingScene()
         {
-            SceneManager.LoadScene(Scenes.GameScene);
+            if (!connectionManager.EnoughPlayers)
+            {
+                SceneManager.LoadScene(Scenes.LoadingScene);
+            }
         }
 
         private void InitButtons()
@@ -93,7 +95,7 @@ namespace Game.Controllers
         private void OnDestroy()
         {
             connectionManager.Error -= ShowAlert;
-            connectionManager.JoinedRoom -= LoadGameScene;
+            connectionManager.JoinedRoom -= LoadLoadingScene;
         }
     }
 }

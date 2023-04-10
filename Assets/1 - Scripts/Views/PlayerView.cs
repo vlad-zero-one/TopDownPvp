@@ -4,7 +4,7 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.Controllers
+namespace Game.Views
 {
     public class PlayerView : MonoBehaviourPun, IPunInstantiateMagicCallback
     {

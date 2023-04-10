@@ -15,13 +15,15 @@ namespace Game.Controllers
 
         private List<CoinView> coins;
 
+        private GameSettings gameSettings;
+
         public Vector2 GetCoinPoint()
         {
             var index = Random.Range(0, coinPoints.Count);
             if (coinPoints[index].Occupied)
             {
                 // limit the number of attempts to spawn in an unoccupied slot, in case each slot is occupied
-                for (var i = 0; i < 5; i++)
+                for (var i = 0; i < gameSettings.AttemptsToSpawnCoin; i++)
                 {
                     index = Random.Range(0, coinPoints.Count);
                     if (!coinPoints[index].Occupied) break;
@@ -53,12 +55,14 @@ namespace Game.Controllers
         private void Awake()
         {
             DI.Add(this);
-            var numberOfCoins = DI.Get<GameSettings>().CoinsOnField;
+
+            gameSettings = DI.Get<GameSettings>();
+
             coins = new();
 
             if (PhotonNetwork.IsMasterClient)
             {
-                SpawnCoins(numberOfCoins);
+                SpawnCoins(gameSettings.CoinsOnField);
             }
         }
 

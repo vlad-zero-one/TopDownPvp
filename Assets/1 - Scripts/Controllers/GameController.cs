@@ -5,6 +5,7 @@ using Photon.Pun;
 using Game.Configs;
 using Photon.Realtime;
 using UnityEngine.SceneManagement;
+using Game.Views;
 
 namespace Game.Controllers
 {

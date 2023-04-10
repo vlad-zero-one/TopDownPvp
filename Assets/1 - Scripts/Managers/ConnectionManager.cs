@@ -23,7 +23,7 @@ namespace Game
         public event PlayerEventHandler NewMaster;
         public event EventHandler ConnectedToMaster;
 
-        public event EventHandler EnoughPlayersToStart;
+        public bool EnoughPlayers => PhotonNetwork.CurrentRoom.PlayerCount >= countOfPlayersToStart;
 
         public void InitConnection()
         {
@@ -79,7 +79,9 @@ namespace Game
 
         public void OnCreateRoomFailed(short returnCode, string message)
         {
-            throw new System.NotImplementedException();
+            logger.Log($"Failed creating room: code: {returnCode}, message: {message}");
+
+            Error?.Invoke($"Failed joining room: {message}");
         }
 
         public void OnCustomAuthenticationFailed(string debugMessage)
@@ -108,11 +110,6 @@ namespace Game
             logger.Log($"{PhotonNetwork.MasterClient.NickName} is master client");
 
             JoinedRoom?.Invoke();
-
-            if (PhotonNetwork.CurrentRoom.PlayerCount == countOfPlayersToStart)
-            {
-                EnoughPlayersToStart?.Invoke();
-            }
         }
 
         public void OnJoinRandomFailed(short returnCode, string message)
@@ -144,11 +141,6 @@ namespace Game
             logger.Log($"Player {newPlayer} entered the room");
 
             NewPlayerJoined?.Invoke(newPlayer);
-
-            if (PhotonNetwork.CurrentRoom.PlayerCount == countOfPlayersToStart)
-            {
-                EnoughPlayersToStart?.Invoke();
-            }
         }
 
         public void OnPlayerLeftRoom(Player otherPlayer)

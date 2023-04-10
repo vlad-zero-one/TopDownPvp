@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   alertShowTime: 2.5
   minPlayersForGame: 2
-  coinsOnField: 3
+  coinsOnField: 1
+  attemptsToSpawnCoin: 5
