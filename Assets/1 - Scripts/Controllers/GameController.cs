@@ -14,7 +14,6 @@ namespace Game.Controllers
         [SerializeField] private ButtonShootController shootController;
 
         [SerializeField] private PlayerView playerPrefab;
-        [SerializeField] private BulletView bulletPrefab;
 
         [SerializeField] private MapController mapController;
 
@@ -23,24 +22,22 @@ namespace Game.Controllers
 
         private PlayerView player;
         private Vector2 lastDirection = Vector2.up;
-        private PlayerSettings playerSettings;
 
         private void Awake()
         {
             connectionManager = DI.Get<ConnectionManager>();
             logger = DI.Get<Logger>();
 
-            var playerSkins = DI.Get<PlayerSkinsData>();
-            playerSettings = DI.Get<PlayerSettings>();
-
             leaveButton.onClick.AddListener(LeaveRoom);
 
-            var playerGO = PhotonNetwork.Instantiate(playerPrefab.name,
-                    mapController.GetSpawnPoint().transform.position,
-                    Quaternion.identity);
+            object[] data = new object[1];
+            data[0] = DI.Get<PlayerSkinsData>().GetRandomSkinName();
 
-            player = playerGO.GetComponent<PlayerView>();
-            player.Init(PhotonNetwork.LocalPlayer.NickName, playerSkins, playerSettings.PlayerSpeed, playerSettings.PlayerHealth);
+            player = PhotonNetwork.Instantiate(playerPrefab.name,
+                    mapController.GetSpawnPoint().transform.position,
+                    Quaternion.identity,
+                    data: data)
+                .GetComponent<PlayerView>();
 
             moveController.Init();
             moveController.MoveDirective += MovePlayer;
@@ -102,6 +99,8 @@ namespace Game.Controllers
 
         private void OnDestroy()
         {
+            leaveButton.onClick.RemoveListener(LeaveRoom);
+
             moveController.MoveDirective -= MovePlayer;
             moveController.StopDirective -= StopPlayer;
             connectionManager.LeftRoom -= LoadLobbyScene;

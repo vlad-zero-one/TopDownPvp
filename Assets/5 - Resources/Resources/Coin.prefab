@@ -10,11 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 9147521524893893108}
   - component: {fileID: 7903388534210070556}
-  - component: {fileID: -5220177562235072252}
   - component: {fileID: 5745688037430011785}
   - component: {fileID: 6035939098882555955}
-  - component: {fileID: 3191784424245004809}
   - component: {fileID: 1699241120355450825}
+  - component: {fileID: -5220177562235072252}
   m_Layer: 0
   m_Name: Coin
   m_TagString: Coin
@@ -89,18 +88,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &-5220177562235072252
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4329495117442266354}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11116eeffc571a44a8f77b3227a156dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!61 &5745688037430011785
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -145,27 +132,10 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents:
-  - {fileID: 3191784424245004809}
+  ObservedComponents: []
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &3191784424245004809
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4329495117442266354}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 0
-  m_SynchronizeScale: 0
-  m_UseLocal: 1
 --- !u!50 &1699241120355450825
 Rigidbody2D:
   serializedVersion: 4
@@ -187,3 +157,15 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &-5220177562235072252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4329495117442266354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11116eeffc571a44a8f77b3227a156dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

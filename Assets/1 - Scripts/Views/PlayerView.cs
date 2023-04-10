@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Game.Controllers
 {
-    public class PlayerView : MonoBehaviourPun
+    public class PlayerView : MonoBehaviourPun, IPunInstantiateMagicCallback
     {
         [SerializeField] private Rigidbody2D rbody;
         [SerializeField] private Canvas playerCanvas;
@@ -24,44 +24,31 @@ namespace Game.Controllers
 
         private int coins;
 
-        public void Init(string nickName, PlayerSkinsData skinsData, float speed, int health)
+        public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
-            this.speed = speed;
-            this.hp = health;
-
-            this.nickName.color = Color.white;
-            this.nickName.text = "YOU";
-
-            var skinName = skinsData.GetRandomSkinName();
-
-            Instantiate(skinsData.GetSkin(skinName), transform).transform.SetSiblingIndex(0);
-            
-            photonView.RPC("SyncInit", RpcTarget.OthersBuffered, nickName, skinName, health);
-        }
-
-        [PunRPC]
-        public void SyncInit(string nickName, string skinName, int health)
-        {
-            this.hp = health;
+            var skinName = (string) info.photonView.InstantiationData[0];
 
             var skinsData = DI.Get<PlayerSkinsData>();
+            var playerSettings = DI.Get<PlayerSettings>();
 
-            this.nickName.text = nickName;
+            this.speed = playerSettings.PlayerSpeed;
+            this.hp = playerSettings.PlayerHealth;
+
+            if (photonView.IsMine)
+            {
+                nickName.color = Color.white;
+                nickName.text = "YOU";
+            }
+            else
+            {
+                nickName.text = photonView.Owner.NickName;
+            }
+
             Instantiate(skinsData.GetSkin(skinName), transform).transform.SetSiblingIndex(0);
         }
 
-        //public void Shoot()
-        //{
-        //    var bullet = PhotonNetwork.Instantiate(bulletPrefab.name,
-        //            player.transform.position,
-        //            Quaternion.identity)
-        //        .GetComponent<BulletView>();
-
-        //    bullet.Shoot(lastDirection, playerSettings.BulletSpeed);
-        //}
-
         [PunRPC]
-        public void Shoot(float positionX, float positionY, float directionX, float directionY, PhotonMessageInfo info)
+        private void Shoot(float positionX, float positionY, float directionX, float directionY, PhotonMessageInfo info)
         {
             var lag = (float)(PhotonNetwork.Time - info.SentServerTime);
 
@@ -81,7 +68,7 @@ namespace Game.Controllers
         }
 
         [PunRPC]
-        public void Damage()
+        private void Damage()
         {
             nickName.text = $"{--hp}";
         }
@@ -111,6 +98,18 @@ namespace Game.Controllers
             if (playerCanvas.transform.up != Vector3.up)
             {
                 playerCanvas.transform.up = Vector3.up;
+            }
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (!photonView.IsMine) return;
+
+            var bullet = collision.gameObject.GetComponent<BulletView>();
+            if (bullet != null && bullet.Owner != photonView.Owner)
+            {
+                Damage();
+                photonView.RPC("Damage", RpcTarget.OthersBuffered);
             }
         }
     }

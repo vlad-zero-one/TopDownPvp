@@ -27,14 +27,8 @@ namespace Game.Controllers
 
             transform.up = direction;
 
-            //Rigidbody rigidbody = GetComponent<Rigidbody>();
             rbody.velocity = direction.normalized * speed;
             rbody.position += rbody.velocity * lag;
-        }
-
-        private void FixedUpdate()
-        {
-            ////rbody.MovePosition(transform.position + speed * Time.fixedDeltaTime * moveDirection);
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -50,17 +44,8 @@ namespace Game.Controllers
             var player = collision.gameObject.GetComponent<PlayerView>();
             if (player != null && player.photonView.Owner != Owner)
             {
-                if (!player.photonView.IsMine) return;
-
-                player.Damage();
                 Destroy(gameObject);
             }
-        }
-
-        [PunRPC]
-        public void Destroy()
-        {
-            Destroy(gameObject);
         }
     }
 }

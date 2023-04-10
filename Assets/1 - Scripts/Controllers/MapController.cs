@@ -12,8 +12,6 @@ namespace Game.Controllers
         [SerializeField] private List<MapPoint> spawnPoints;
         [SerializeField] private List<MapPoint> coinPoints;
 
-        [SerializeField] private CoinView coinPrefab;
-
         private List<CoinView> coins;
 
         private void Awake()
