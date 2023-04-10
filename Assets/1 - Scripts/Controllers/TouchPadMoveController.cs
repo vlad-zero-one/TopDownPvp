@@ -15,7 +15,8 @@ namespace Game.Controllers
 
         public void Init()
         {
-            range = joystickHandler.rect.width - joystick.rect.width;
+            range = (joystickHandler.rect.width - joystick.rect.width) / 2
+                * GetComponentInParent<Canvas>().scaleFactor;
         }
 
         public void OnDrag(PointerEventData data)
