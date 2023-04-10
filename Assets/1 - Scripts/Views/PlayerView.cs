@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Game.Controllers
 {
-    public class PlayerController : MonoBehaviourPun
+    public class PlayerView : MonoBehaviourPun
     {
         [SerializeField] private Rigidbody2D rbody;
         [SerializeField] private Canvas playerCanvas;
@@ -68,7 +68,6 @@ namespace Game.Controllers
         public void AddCoint()
         {
             coins++;
-            Debug.LogError(coins);
         }
 
         private void FixedUpdate()

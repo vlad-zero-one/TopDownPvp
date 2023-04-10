@@ -13,15 +13,15 @@ namespace Game.Controllers
         [SerializeField] private TouchPadMoveController moveController;
         [SerializeField] private ButtonShootController shootController;
 
-        [SerializeField] private PlayerController playerPrefab;
-        [SerializeField] private BulletController bulletPrefab;
+        [SerializeField] private PlayerView playerPrefab;
+        [SerializeField] private BulletView bulletPrefab;
 
         [SerializeField] private MapController mapController;
 
         private ConnectionManager connectionManager;
         private Logger logger;
 
-        private PlayerController player;
+        private PlayerView player;
         private Vector2 lastDirection = Vector2.up;
         private PlayerSettings playerSettings;
 
@@ -39,7 +39,7 @@ namespace Game.Controllers
                     mapController.GetSpawnPoint().transform.position,
                     Quaternion.identity);
 
-            player = playerGO.GetComponent<PlayerController>();
+            player = playerGO.GetComponent<PlayerView>();
             player.Init(PhotonNetwork.LocalPlayer.NickName, playerSkins, playerSettings.PlayerSpeed, playerSettings.PlayerHealth);
 
             moveController.Init();
@@ -64,10 +64,6 @@ namespace Game.Controllers
             {
                 connectionManager.NewPlayerJoined += mapController.SyncCoins;
             }
-            else
-            {
-                connectionManager.NewPlayerJoined -= mapController.SyncCoins;
-            }
         }
 
         private void Shoot()
@@ -75,7 +71,7 @@ namespace Game.Controllers
             var bullet = PhotonNetwork.Instantiate(bulletPrefab.name,
                     player.transform.position,
                     Quaternion.identity)
-                .GetComponent<BulletController>();
+                .GetComponent<BulletView>();
 
             bullet.Shoot(lastDirection, playerSettings.BulletSpeed);
         }

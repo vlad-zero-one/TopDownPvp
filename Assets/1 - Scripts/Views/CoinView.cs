@@ -17,7 +17,7 @@ namespace Game.Views
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            var player = collision.gameObject.GetComponent<PlayerController>();
+            var player = collision.gameObject.GetComponent<PlayerView>();
             if (player != null)
             {
                 if (player.photonView.IsMine)

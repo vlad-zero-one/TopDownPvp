@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game.Controllers
 {
-    public class BulletController : MonoBehaviourPun
+    public class BulletView : MonoBehaviourPun
     {
         [SerializeField] private Rigidbody2D rbody;
 
@@ -34,7 +34,7 @@ namespace Game.Controllers
                 return;
             }
 
-            var player = collision.gameObject.GetComponent<PlayerController>();
+            var player = collision.gameObject.GetComponent<PlayerView>();
             if (player != null && player.photonView.Owner != photonView.Owner)
             {
                 player.photonView.RPC("Damage", RpcTarget.All);
