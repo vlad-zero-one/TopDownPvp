@@ -1,3 +1,4 @@
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,7 @@ namespace Game.UI
         [SerializeField] private GameObject victoryContainer;
         [SerializeField] private GameObject defeatContainer;
         [SerializeField] private Text coinsText;
+        [SerializeField] private Text playerNameText;
 
         public void Show(bool victory, int coins)
         {
@@ -17,6 +19,7 @@ namespace Game.UI
             victoryContainer.SetActive(victory);
             defeatContainer.SetActive(!victory);
             coinsText.text = $"{coins}";
+            playerNameText.text = PhotonNetwork.LocalPlayer.NickName;
         }
     }
 }
