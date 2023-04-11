@@ -25,17 +25,6 @@ namespace Game.UI
             StartCoroutine(Cooldown());
         }
 
-#if UNITY_EDITOR || PLATFORM_STANDALONE_WIN
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                ShootDirective?.Invoke();
-                StartCoroutine(Cooldown());
-            }
-        }
-#endif
-
         private IEnumerator Cooldown()
         {
             shootButton.enabled = false;
