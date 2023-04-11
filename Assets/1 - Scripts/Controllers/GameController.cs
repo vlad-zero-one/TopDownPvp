@@ -22,12 +22,14 @@ namespace Game.Controllers
         [SerializeField] private EndBattleScreenController endBattleScreen;
 
         private ConnectionManager connectionManager;
+        private GameSettings gameSettings;
         private Logger logger;
 
         private PlayerView player;
         private Vector2 lastDirection = Vector2.up;
 
         private List<PlayerView> otherPlayers = new();
+        private bool defeated;
 
         public void AddOtherPlayer(PlayerView otherPlayer)
         {
@@ -42,6 +44,7 @@ namespace Game.Controllers
 
             connectionManager = DI.Get<ConnectionManager>();
             logger = DI.Get<Logger>();
+            gameSettings = DI.Get<GameSettings>();
 
             object[] data = new object[1];
             data[0] = DI.Get<PlayerAppearanceData>().GetRandomSkinName();
@@ -70,7 +73,7 @@ namespace Game.Controllers
             connectionManager.LeftRoom += LoadLobbyScene;
             connectionManager.NewMaster += SyncCoinsForNewPlayer;
 
-            player.Die += Die;
+            player.Die += OnPlayerDied;
 
             if (PhotonNetwork.IsMasterClient)
             {
@@ -85,8 +88,9 @@ namespace Game.Controllers
             if (otherPlayers.Contains(otherPlayer))
             {
                 otherPlayers.Remove(otherPlayer);
+                Destroy(otherPlayer.gameObject, gameSettings.DestroyDeadTime);
 
-                if (otherPlayers.Count == 0)
+                if (otherPlayers.Count == 0 && !defeated)
                 {
                     Win();
                 }
@@ -108,21 +112,13 @@ namespace Game.Controllers
             PhotonNetwork.CurrentRoom.IsOpen = false;
         }
 
-        private void Die(PlayerView _)
+        private void OnPlayerDied(PlayerView _)
         {
+            defeated = true;
+
             endBattleScreen.Show(false, player.Coins);
 
-            StartCoroutine(Die());
-        }
-
-        private IEnumerator Die()
-        {
-            yield return new WaitForSeconds(3f);
-
-            if (PhotonNetwork.IsMasterClient)
-            {
-                PhotonNetwork.Destroy(player.photonView);
-            }
+            Destroy(player.gameObject, gameSettings.DestroyDeadTime);
         }
 
         private void Shoot()
@@ -171,7 +167,7 @@ namespace Game.Controllers
             connectionManager.LeftRoom -= LoadLobbyScene;
             connectionManager.NewMaster -= SyncCoinsForNewPlayer;
 
-            player.Die -= Die;
+            player.Die -= OnPlayerDied;
 
             foreach (var otherPlayer in otherPlayers)
             {

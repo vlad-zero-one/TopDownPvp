@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: GameSettings
   m_EditorClassIdentifier: 
   alertShowTime: 2.5
+  destroyDeadTime: 3
   minPlayersForGame: 2
   coinsOnField: 1
   attemptsToSpawnCoin: 5
