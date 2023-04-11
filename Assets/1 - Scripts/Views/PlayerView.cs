@@ -29,7 +29,11 @@ namespace Game.Views
         private bool justSpawned;
 
         public delegate void DieEventHandler(PlayerView sender);
+        public delegate void EventHandler();
+
         public event DieEventHandler Die;
+        public event EventHandler Damaged;
+        public event EventHandler GotCoin;
 
         public int Coins { get; private set; }
 
@@ -103,6 +107,7 @@ namespace Game.Views
         private void Damage()
         {
             slider.value = --hp;
+            Damaged?.Invoke();
 
             if (hp <= 0)
             {
@@ -113,6 +118,7 @@ namespace Game.Views
         public void AddCoint()
         {
             Coins++;
+            GotCoin?.Invoke();
         }
 
         private void FixedUpdate()
@@ -155,6 +161,7 @@ namespace Game.Views
             }
         }
 
+        // ad hoc..
         private void OnCollisionEnter2D(Collision2D collision)
         {
             if (justSpawned)

@@ -9,6 +9,7 @@ using Game.Views;
 using System.Collections.Generic;
 using System;
 using System.Collections;
+using Game.UI;
 
 namespace Game.Controllers
 {
@@ -19,6 +20,7 @@ namespace Game.Controllers
         [SerializeField] private ButtonShootController shootController;
 
         [SerializeField] private MapController mapController;
+        [SerializeField] private PlayerStatsController playerStatsController;
         [SerializeField] private EndBattleScreenController endBattleScreen;
 
         private ConnectionManager connectionManager;
@@ -45,6 +47,7 @@ namespace Game.Controllers
             connectionManager = DI.Get<ConnectionManager>();
             logger = DI.Get<Logger>();
             gameSettings = DI.Get<GameSettings>();
+            var playerSettings = DI.Get<PlayerSettings>();
 
             object[] data = new object[1];
             data[0] = DI.Get<PlayerAppearanceData>().GetRandomSkinName();
@@ -55,8 +58,9 @@ namespace Game.Controllers
                     data: data)
                 .GetComponent<PlayerView>();
 
+            playerStatsController.Init(playerSettings, player);
             moveController.Init();
-            shootController.Init(DI.Get<PlayerSettings>().ShootCooldown);
+            shootController.Init(playerSettings.ShootCooldown);
 
             InitSubscribtions();
         }

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.Controllers
+namespace Game.UI
 {
     public class EndBattleScreenController : MonoBehaviour
     {
