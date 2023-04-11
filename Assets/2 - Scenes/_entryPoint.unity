@@ -524,7 +524,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4595028317974358488, guid: 4c16cdc6866e525438832b1404af35aa, type: 3}
       propertyPath: m_Name
-      value: LoggerCanvas
+      value: Logger
       objectReference: {fileID: 0}
     - target: {fileID: 4595028317974358495, guid: 4c16cdc6866e525438832b1404af35aa, type: 3}
       propertyPath: m_Pivot.x
@@ -609,6 +609,10 @@ PrefabInstance:
     - target: {fileID: 4595028317974358495, guid: 4c16cdc6866e525438832b1404af35aa, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5777520687862568797, guid: 4c16cdc6866e525438832b1404af35aa, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4c16cdc6866e525438832b1404af35aa, type: 3}
