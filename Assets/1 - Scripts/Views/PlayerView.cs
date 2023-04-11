@@ -1,6 +1,7 @@
 using DependencyInjection;
 using Game.Configs;
 using Game.Controllers;
+using Game.Static;
 using Photon.Pun;
 using System.Collections;
 using UnityEngine;
@@ -74,24 +75,6 @@ namespace Game.Views
             StartCoroutine(SpawnSuffleCooldown());
         }
 
-        private IEnumerator SpawnSuffleCooldown()
-        {
-            yield return new WaitForSeconds(gameSettings.SuffleOnSpawnTime);
-            justSpawned = false;
-        }
-
-        [PunRPC]
-        private void Shoot(float positionX, float positionY, float directionX, float directionY, PhotonMessageInfo info)
-        {
-            var lag = (float)(PhotonNetwork.Time - info.SentServerTime);
-
-            var bullet = Instantiate(bulletPrefab, new(positionX, positionY), Quaternion.identity);
-            bullet.Init(photonView.Owner, 
-                new(directionX, directionY),
-                playerSettings.BulletSpeed,
-                Mathf.Abs(lag));
-        }
-
         public void StartMove(Vector2 moveDirection)
         {
             this.moveDirection = moveDirection;
@@ -101,6 +84,24 @@ namespace Game.Views
         public void StopMove()
         {
             moving = false;
+        }
+
+        public void AddCoint()
+        {
+            Coins++;
+            GotCoin?.Invoke();
+        }
+
+        [PunRPC]
+        private void Shoot(float positionX, float positionY, float directionX, float directionY, PhotonMessageInfo info)
+        {
+            var lag = (float)(PhotonNetwork.Time - info.SentServerTime);
+
+            var bullet = Instantiate(bulletPrefab, new(positionX, positionY), Quaternion.identity);
+            bullet.Init(photonView.Owner,
+                new(directionX, directionY),
+                playerSettings.BulletSpeed,
+                Mathf.Abs(lag));
         }
 
         [PunRPC]
@@ -115,10 +116,10 @@ namespace Game.Views
             }
         }
 
-        public void AddCoint()
+        private IEnumerator SpawnSuffleCooldown()
         {
-            Coins++;
-            GotCoin?.Invoke();
+            yield return new WaitForSeconds(gameSettings.SuffleOnSpawnTime);
+            justSpawned = false;
         }
 
         private void FixedUpdate()

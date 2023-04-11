@@ -5,6 +5,7 @@ using DependencyInjection;
 using WebSocketSharp;
 using UnityEngine.SceneManagement;
 using Game.Configs;
+using Game.Static;
 
 namespace Game.Controllers
 {

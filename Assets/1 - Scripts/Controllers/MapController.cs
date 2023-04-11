@@ -1,5 +1,6 @@
 using DependencyInjection;
 using Game.Configs;
+using Game.Static;
 using Game.Views;
 using Photon.Pun;
 using Photon.Realtime;

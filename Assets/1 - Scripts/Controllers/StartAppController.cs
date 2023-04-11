@@ -3,6 +3,7 @@ using Photon.Pun;
 using UnityEngine.SceneManagement;
 using Game.Configs;
 using DependencyInjection;
+using Game.Static;
 
 namespace Game.Controllers
 {

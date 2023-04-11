@@ -84,24 +84,9 @@ namespace Game
             Error?.Invoke($"Failed joining room: {message}");
         }
 
-        public void OnCustomAuthenticationFailed(string debugMessage)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void OnCustomAuthenticationResponse(Dictionary<string, object> data)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public void OnDisconnected(DisconnectCause cause)
         {
             logger.Log($"Player {PhotonNetwork.LocalPlayer.NickName} Disconnected. Cause: {cause}");
-        }
-
-        public void OnFriendListUpdate(List<FriendInfo> friendList)
-        {
-            throw new System.NotImplementedException();
         }
 
         public void OnJoinedRoom()
@@ -110,11 +95,6 @@ namespace Game
             logger.Log($"{PhotonNetwork.MasterClient.NickName} is master client");
 
             JoinedRoom?.Invoke();
-        }
-
-        public void OnJoinRandomFailed(short returnCode, string message)
-        {
-            throw new System.NotImplementedException();
         }
 
         public void OnJoinRoomFailed(short returnCode, string message)
@@ -148,15 +128,35 @@ namespace Game
             logger.Log($"Player {otherPlayer} left the room");
         }
 
-        public void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged) { }
-
-        public void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps) { }
-
         public void OnMasterClientSwitched(Player newMasterClient)
         {
             logger.Log($"{newMasterClient.NickName} is master client now");
 
             NewMaster?.Invoke(newMasterClient);
+        }
+
+        public void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged) { }
+
+        public void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps) { }
+
+        public void OnCustomAuthenticationFailed(string debugMessage)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void OnCustomAuthenticationResponse(Dictionary<string, object> data)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void OnFriendListUpdate(List<FriendInfo> friendList)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void OnJoinRandomFailed(short returnCode, string message)
+        {
+            throw new System.NotImplementedException();
         }
 
         #endregion

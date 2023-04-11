@@ -1,4 +1,4 @@
-namespace Game
+namespace Game.Static
 {
     public static class NetworkPrefabs
     {

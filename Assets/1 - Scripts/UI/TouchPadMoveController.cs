@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Game.Controllers
+namespace Game.UI
 {
     public class TouchPadMoveController : MonoBehaviour, IDragHandler, IEndDragHandler, IMoveController
     {

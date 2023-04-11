@@ -7,9 +7,8 @@ using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using Game.Views;
 using System.Collections.Generic;
-using System;
-using System.Collections;
 using Game.UI;
+using Game.Static;
 
 namespace Game.Controllers
 {
@@ -25,7 +24,6 @@ namespace Game.Controllers
 
         private ConnectionManager connectionManager;
         private GameSettings gameSettings;
-        private Logger logger;
 
         private PlayerView player;
         private Vector2 lastDirection = Vector2.up;
@@ -45,7 +43,6 @@ namespace Game.Controllers
             DI.Add(this);
 
             connectionManager = DI.Get<ConnectionManager>();
-            logger = DI.Get<Logger>();
             gameSettings = DI.Get<GameSettings>();
             var playerSettings = DI.Get<PlayerSettings>();
 

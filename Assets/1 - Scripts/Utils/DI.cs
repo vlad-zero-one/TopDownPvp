@@ -7,10 +7,7 @@ namespace DependencyInjection
     {
         private static Dictionary<Type, object> injections;
 
-        private static Dictionary<Type, object> Injections =>
-            injections is null 
-            ? injections = new Dictionary<Type, object>() 
-            : injections;
+        private static Dictionary<Type, object> Injections => injections ??= new();
 
         public static void Add<T>(T obj)
         {

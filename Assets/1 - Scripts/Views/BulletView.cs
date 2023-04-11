@@ -1,3 +1,4 @@
+using Game.Static;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -7,8 +8,6 @@ namespace Game.Views
     public class BulletView : MonoBehaviourPun
     {
         [SerializeField] private Rigidbody2D rbody;
-
-        private Vector3 moveDirection;
 
         public Player Owner { get; private set; }
 

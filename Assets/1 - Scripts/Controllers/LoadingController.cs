@@ -1,4 +1,5 @@
 using DependencyInjection;
+using Game.Static;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;

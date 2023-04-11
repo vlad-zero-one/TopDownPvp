@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   alertShowTime: 2.5
   destroyDeadTime: 3
+  suffleOnSpawnTime: 0.5
   minPlayersForGame: 2
   coinsOnField: 1
   attemptsToSpawnCoin: 5
