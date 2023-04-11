@@ -6,6 +6,9 @@ using Game.Configs;
 using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using Game.Views;
+using System.Collections.Generic;
+using System;
+using System.Collections;
 
 namespace Game.Controllers
 {
@@ -24,8 +27,19 @@ namespace Game.Controllers
         private PlayerView player;
         private Vector2 lastDirection = Vector2.up;
 
+        private List<PlayerView> otherPlayers = new();
+
+        public void AddOtherPlayer(PlayerView otherPlayer)
+        {
+            otherPlayers.Add(otherPlayer);
+
+            otherPlayer.Die += RemoveFromList;
+        }
+
         private void Awake()
         {
+            DI.Add(this);
+
             connectionManager = DI.Get<ConnectionManager>();
             logger = DI.Get<Logger>();
 
@@ -64,6 +78,21 @@ namespace Game.Controllers
             }
         }
 
+        private void RemoveFromList(PlayerView otherPlayer)
+        {
+            otherPlayer.Die -= RemoveFromList;
+
+            if (otherPlayers.Contains(otherPlayer))
+            {
+                otherPlayers.Remove(otherPlayer);
+
+                if (otherPlayers.Count == 0)
+                {
+                    Win();
+                }
+            }
+        }
+
         private void SyncCoinsForNewPlayer(Player newMaster)
         {
             if (newMaster == PhotonNetwork.LocalPlayer)
@@ -72,11 +101,28 @@ namespace Game.Controllers
             }
         }
 
-        private void Die()
+        private void Win()
+        {
+            endBattleScreen.Show(true, player.Coins);
+
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+        }
+
+        private void Die(PlayerView _)
         {
             endBattleScreen.Show(false, player.Coins);
 
-            //destroy
+            StartCoroutine(Die());
+        }
+
+        private IEnumerator Die()
+        {
+            yield return new WaitForSeconds(3f);
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                PhotonNetwork.Destroy(player.photonView);
+            }
         }
 
         private void Shoot()
@@ -127,10 +173,14 @@ namespace Game.Controllers
 
             player.Die -= Die;
 
-            if (PhotonNetwork.IsMasterClient)
+            foreach (var otherPlayer in otherPlayers)
             {
-                connectionManager.NewPlayerJoined -= mapController.SyncCoins;
+                otherPlayer.Die -= RemoveFromList;
             }
+
+            connectionManager.NewPlayerJoined -= mapController.SyncCoins;
+
+            DI.Remove(this);
         }
     }
 }

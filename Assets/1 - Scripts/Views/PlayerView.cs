@@ -1,5 +1,6 @@
 using DependencyInjection;
 using Game.Configs;
+using Game.Controllers;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,7 +24,7 @@ namespace Game.Views
 
         private int hp;
 
-        public delegate void DieEventHandler();
+        public delegate void DieEventHandler(PlayerView sender);
         public event DieEventHandler Die;
 
         public int Coins { get; private set; }
@@ -50,6 +51,11 @@ namespace Game.Views
             }
 
             Instantiate(appearanceData.GetSkin(skinName), transform).transform.SetSiblingIndex(0);
+
+            if (!photonView.IsMine)
+            {
+                DI.Get<GameController>().AddOtherPlayer(this);
+            }
         }
 
         [PunRPC]
@@ -82,7 +88,7 @@ namespace Game.Views
 
             if (hp <= 0)
             {
-                Die?.Invoke();
+                Die?.Invoke(this);
             }
         }
 
@@ -112,6 +118,11 @@ namespace Game.Views
             {
                 playerCanvas.transform.up = Vector3.up;
             }
+        }
+
+        private void OnDestroy()
+        {
+            Die?.Invoke(this);
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
