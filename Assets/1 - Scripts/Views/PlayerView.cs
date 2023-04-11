@@ -13,6 +13,7 @@ namespace Game.Views
         [SerializeField] private Rigidbody2D rbody;
         [SerializeField] private Canvas playerCanvas;
         [SerializeField] private Text nickName;
+        [SerializeField] private Slider slider;
 
         [SerializeField] private BulletView bulletPrefab;
 
@@ -59,6 +60,9 @@ namespace Game.Views
 
             if (!photonView.IsMine)
             {
+                slider.gameObject.SetActive(true);
+                slider.maxValue = hp;
+                slider.value = hp;
                 DI.Get<GameController>().AddOtherPlayer(this);
             }
 
@@ -98,7 +102,7 @@ namespace Game.Views
         [PunRPC]
         private void Damage()
         {
-            nickName.text = $"{--hp}";
+            slider.value = --hp;
 
             if (hp <= 0)
             {
