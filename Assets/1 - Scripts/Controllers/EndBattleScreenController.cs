@@ -11,6 +11,8 @@ namespace Game.UI
 
         public void Show(bool victory, int coins)
         {
+            if (this == null || gameObject == null) return;
+
             gameObject.SetActive(true);
             victoryContainer.SetActive(victory);
             defeatContainer.SetActive(!victory);
