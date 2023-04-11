@@ -2,6 +2,7 @@ using DependencyInjection;
 using Game.Configs;
 using Game.Controllers;
 using Photon.Pun;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,13 +17,15 @@ namespace Game.Views
         [SerializeField] private BulletView bulletPrefab;
 
         private PlayerSettings playerSettings;
+        private GameSettings gameSettings;
+
+        private int hp;
         private float speed;
 
         private Vector3 moveDirection;
-
         private bool moving;
 
-        private int hp;
+        private bool justSpawned;
 
         public delegate void DieEventHandler(PlayerView sender);
         public event DieEventHandler Die;
@@ -33,11 +36,13 @@ namespace Game.Views
         {
             var skinName = (string) info.photonView.InstantiationData[0];
 
-            var appearanceData = DI.Get<PlayerAppearanceData>();
             playerSettings = DI.Get<PlayerSettings>();
+            gameSettings = DI.Get<GameSettings>();
 
-            speed = playerSettings.PlayerSpeed;
             hp = playerSettings.PlayerHealth;
+            speed = playerSettings.PlayerSpeed;
+
+            var appearanceData = DI.Get<PlayerAppearanceData>();
 
             if (photonView.IsMine)
             {
@@ -56,6 +61,15 @@ namespace Game.Views
             {
                 DI.Get<GameController>().AddOtherPlayer(this);
             }
+
+            justSpawned = true;
+            StartCoroutine(SpawnSuffleCooldown());
+        }
+
+        private IEnumerator SpawnSuffleCooldown()
+        {
+            yield return new WaitForSeconds(gameSettings.SuffleOnSpawnTime);
+            justSpawned = false;
         }
 
         [PunRPC]
@@ -134,6 +148,17 @@ namespace Game.Views
             {
                 Damage();
                 photonView.RPC("Damage", RpcTarget.OthersBuffered);
+            }
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (justSpawned)
+            {
+                if (collision.gameObject.CompareTag(Tags.Player))
+                {
+                    transform.position = DI.Get<MapController>().GetSpawnPoint().transform.position;
+                }
             }
         }
     }

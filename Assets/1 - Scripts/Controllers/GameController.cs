@@ -109,7 +109,10 @@ namespace Game.Controllers
         {
             endBattleScreen.Show(true, player.Coins);
 
-            PhotonNetwork.CurrentRoom.IsOpen = false;
+            if (PhotonNetwork.CurrentRoom != null)
+            {
+                PhotonNetwork.CurrentRoom.IsOpen = false;
+            }
         }
 
         private void OnPlayerDied(PlayerView _)
