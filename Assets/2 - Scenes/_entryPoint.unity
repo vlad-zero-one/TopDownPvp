@@ -216,7 +216,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 55
   m_TargetDisplay: 0
 --- !u!224 &285473046
 RectTransform:
@@ -583,7 +583,7 @@ GameObject:
   - component: {fileID: 1222970121}
   - component: {fileID: 1222970120}
   m_Layer: 5
-  m_Name: LoadingCanvas
+  m_Name: StartingCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -648,7 +648,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1000
+  m_SortingOrder: 60
   m_TargetDisplay: 0
 --- !u!224 &1222970123
 RectTransform:
