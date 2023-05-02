@@ -13,11 +13,14 @@ namespace Game.Configs
         [SerializeField] private int coinsOnField;
         [SerializeField] private int attemptsToSpawnCoin;
 
+        [SerializeField] private bool startWithOnePlayer;
+
         public float AlertShowTime => alertShowTime;
         public float DestroyDeadTime => destroyDeadTime;
         public float SuffleOnSpawnTime => suffleOnSpawnTime;
         public int MinPlayersForGame => minPlayersForGame;
         public int CoinsOnField => coinsOnField;
         public int AttemptsToSpawnCoin => attemptsToSpawnCoin;
+        public bool StartWithOnePlayer => startWithOnePlayer;
     }
 }

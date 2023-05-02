@@ -6,6 +6,7 @@ using WebSocketSharp;
 using UnityEngine.SceneManagement;
 using Game.Configs;
 using Game.Static;
+using Photon.Pun;
 
 namespace Game.Controllers
 {
@@ -21,13 +22,14 @@ namespace Game.Controllers
 
         private ConnectionManager connectionManager;
 
+        private GameSettings gameSettings;
+
         private Coroutine alertRoutine;
-        private float alertTime;
 
         private void Awake()
         {
             connectionManager = DI.Get<ConnectionManager>();
-            alertTime = DI.Get<GameSettings>().AlertShowTime;
+            gameSettings = DI.Get<GameSettings>();
 
             InitButtons();
 
@@ -37,7 +39,11 @@ namespace Game.Controllers
 
         private void LoadLoadingScene()
         {
-            if (!connectionManager.EnoughPlayers)
+            if (connectionManager.EnoughPlayers || gameSettings.StartWithOnePlayer)
+            {
+                PhotonNetwork.LoadLevel(Scenes.GameScene);
+            }
+            else
             {
                 SceneManager.LoadScene(Scenes.LoadingScene);
             }
@@ -88,7 +94,7 @@ namespace Game.Controllers
         private IEnumerator ShowAlert()
         {
             alertTextObject.enabled = true;
-            yield return new WaitForSeconds(alertTime);
+            yield return new WaitForSeconds(gameSettings.AlertShowTime);
             alertTextObject.enabled = false;
             alertRoutine = null;
         }

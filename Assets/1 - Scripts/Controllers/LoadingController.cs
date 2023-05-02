@@ -1,4 +1,5 @@
 using DependencyInjection;
+using Game.Configs;
 using Game.Static;
 using Photon.Pun;
 using Photon.Realtime;
@@ -13,18 +14,21 @@ namespace Game.Controllers
 
         private ConnectionManager connectionManager;
 
+        private GameSettings gameSettings;
+
         private void Awake()
         {
             connectionManager = DI.Get<ConnectionManager>();
+            gameSettings = DI.Get<GameSettings>();
 
-            if (!connectionManager.EnoughPlayers)
+            if (!connectionManager.EnoughPlayers && !gameSettings.StartWithOnePlayer)
             {
                 waitingText.enabled = true;
             }
 
             if (PhotonNetwork.IsMasterClient)
             {
-                if (connectionManager.EnoughPlayers)
+                if (connectionManager.EnoughPlayers || gameSettings.StartWithOnePlayer)
                 {
                     PhotonNetwork.LoadLevel(Scenes.GameScene);
                 }

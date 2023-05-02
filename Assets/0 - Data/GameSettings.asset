@@ -18,3 +18,4 @@ MonoBehaviour:
   minPlayersForGame: 2
   coinsOnField: 1
   attemptsToSpawnCoin: 5
+  startWithOnePlayer: 1
