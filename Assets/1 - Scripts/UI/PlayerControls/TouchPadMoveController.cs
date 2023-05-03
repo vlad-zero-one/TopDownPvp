@@ -15,6 +15,8 @@ namespace Game.UI
 
         public void Init()
         {
+            gameObject.SetActive(true);
+
             range = (joystickHandler.rect.width - joystick.rect.width) / 2
                 * GetComponentInParent<Canvas>().scaleFactor;
         }

@@ -14,6 +14,7 @@ namespace Game.Configs
         [SerializeField] private int attemptsToSpawnCoin;
 
         [SerializeField] private bool startWithOnePlayer;
+        [SerializeField] private bool keyBoardControl;
 
         public float AlertShowTime => alertShowTime;
         public float DestroyDeadTime => destroyDeadTime;
@@ -22,5 +23,6 @@ namespace Game.Configs
         public int CoinsOnField => coinsOnField;
         public int AttemptsToSpawnCoin => attemptsToSpawnCoin;
         public bool StartWithOnePlayer => startWithOnePlayer;
+        public bool KeyBoardControl => keyBoardControl;
     }
 }

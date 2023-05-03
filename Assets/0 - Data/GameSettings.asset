@@ -19,3 +19,4 @@ MonoBehaviour:
   coinsOnField: 1
   attemptsToSpawnCoin: 5
   startWithOnePlayer: 1
+  keyBoardControl: 0

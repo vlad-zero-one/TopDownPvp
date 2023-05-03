@@ -15,8 +15,9 @@ namespace Game.Controllers
     public class GameController : MonoBehaviour
     {
         [SerializeField] private Button leaveButton;
-        [SerializeField] private TouchPadMoveController moveController;
-        [SerializeField] private ButtonShootController shootController;
+        [SerializeField] private TouchPadMoveController touchPadMoveController;
+        [SerializeField] private ButtonShootController buttonShootController;
+        [SerializeField] private KeyboardController keyboardController;
 
         [SerializeField] private MapController mapController;
         [SerializeField] private PlayerStatsController playerStatsController;
@@ -24,6 +25,9 @@ namespace Game.Controllers
 
         private ConnectionManager connectionManager;
         private GameSettings gameSettings;
+
+        private IMoveController moveController;
+        private IShootController shootController;
 
         private PlayerView player;
         private Vector2 lastDirection = Vector2.up;
@@ -56,6 +60,10 @@ namespace Game.Controllers
                 .GetComponent<PlayerView>();
 
             playerStatsController.Init(playerSettings, player);
+
+            moveController = gameSettings.KeyBoardControl ? keyboardController : touchPadMoveController;
+            shootController = gameSettings.KeyBoardControl ? keyboardController : buttonShootController;
+
             moveController.Init();
             shootController.Init(playerSettings.ShootCooldown);
 
