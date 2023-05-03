@@ -130,10 +130,7 @@ namespace Game.Views
                 var pos = lastPos + speed * Time.fixedDeltaTime * moveDirection;
                 rbody.MovePosition(pos);
 
-                if (moveDirection.normalized != Vector3.down)
-                {
-                    transform.up = moveDirection;
-                }
+                transform.rotation = Quaternion.Euler(0, 0, Vector2.SignedAngle(Vector2.up, moveDirection));
             }
         }
 
