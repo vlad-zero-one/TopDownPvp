@@ -15,6 +15,7 @@ namespace Game
         public delegate void ErrorEventHandler(string message);
         public delegate void EventHandler();
         public delegate void PlayerEventHandler(Player newPlayer);
+        public delegate void PlayersCountEventHandler(int playesrCount);
 
         public event ErrorEventHandler Error;
         public event EventHandler JoinedRoom;
@@ -22,6 +23,7 @@ namespace Game
         public event PlayerEventHandler NewPlayerJoined;
         public event PlayerEventHandler NewMaster;
         public event EventHandler ConnectedToMaster;
+        public event PlayersCountEventHandler CountOfPlayersInRoomsChanged;
 
         public bool EnoughPlayers => PhotonNetwork.CurrentRoom.PlayerCount >= countOfPlayersToStart;
 
@@ -95,6 +97,7 @@ namespace Game
             logger.Log($"{PhotonNetwork.MasterClient.NickName} is master client");
 
             JoinedRoom?.Invoke();
+            CountOfPlayersInRoomsChanged?.Invoke(PhotonNetwork.CountOfPlayersInRooms);
         }
 
         public void OnJoinRoomFailed(short returnCode, string message)
@@ -121,11 +124,14 @@ namespace Game
             logger.Log($"Player {newPlayer} entered the room");
 
             NewPlayerJoined?.Invoke(newPlayer);
+            CountOfPlayersInRoomsChanged?.Invoke(PhotonNetwork.CurrentRoom.PlayerCount);
         }
 
         public void OnPlayerLeftRoom(Player otherPlayer)
         {
             logger.Log($"Player {otherPlayer} left the room");
+
+            CountOfPlayersInRoomsChanged?.Invoke(PhotonNetwork.CurrentRoom.PlayerCount);
         }
 
         public void OnMasterClientSwitched(Player newMasterClient)
