@@ -8,6 +8,8 @@ using Game.Configs;
 using Game.Static;
 using Photon.Pun;
 using Photon.Realtime;
+using System;
+using System.Threading;
 
 namespace Game.Controllers
 {
@@ -37,6 +39,8 @@ namespace Game.Controllers
 
         private string startMatchInfo;
         private string playersCount;
+        private Coroutine recountCoroutine;
+        private byte playersInRoom;
 
         private void Awake()
         {
@@ -61,6 +65,8 @@ namespace Game.Controllers
             createAndEnterContainer.SetActive(true);
 
             connectionManager.LeaveRoom();
+
+            StopCoroutine(recountCoroutine);
         }
 
         private void ShowStartMatchContainer()
@@ -69,18 +75,28 @@ namespace Game.Controllers
             startMatchContainer.SetActive(true);
 
             startMatchInfoText.text = string.Format(startMatchInfo, gameSettings.MinPlayersForGame);
-            CountPlayers();
 
-            connectionManager.CountOfPlayersInRoomsChanged += CountPlayers;
+            recountCoroutine ??= StartCoroutine(RecountPlayers());
         }
 
-        private void CountPlayers(int countOfPlayers = 0)
+        // We need this because PhotonNetwork.CurrentRoom.PlayerCount ambiguous
+        // in IInRoomCallbacks.OnPlayerEnteredRoom IInRoomCallbacks.OnPlayerLeftRoom
+        private IEnumerator RecountPlayers()
         {
-            playersCountText.text = string.Format(playersCount,
-                countOfPlayers == 0 ? PhotonNetwork.CurrentRoom.PlayerCount : countOfPlayers);
+            while (this != null)
+            {
+                if (PhotonNetwork.CurrentRoom != null && PhotonNetwork.CurrentRoom.PlayerCount != playersInRoom)
+                {
+                    playersInRoom = PhotonNetwork.CurrentRoom.PlayerCount;
 
-            playButton.interactable = PhotonNetwork.IsMasterClient && 
-                (connectionManager.EnoughPlayers || gameSettings.StartWithOnePlayer);
+                    playersCountText.text = string.Format(playersCount, playersInRoom);
+
+                    playButton.interactable = PhotonNetwork.IsMasterClient &&
+                        (connectionManager.EnoughPlayers || gameSettings.StartWithOnePlayer);
+                }
+
+                yield return new WaitForSeconds(1f);
+            }
         }
 
         private void Play()
@@ -154,8 +170,6 @@ namespace Game.Controllers
         {
             connectionManager.Error -= ShowAlert;
             connectionManager.JoinedRoom -= ShowStartMatchContainer;
-
-            connectionManager.CountOfPlayersInRoomsChanged -= CountPlayers;
 
             leaveRoomButton.onClick.RemoveListener(LeaveRoom);
             playButton.onClick.RemoveListener(Play);
