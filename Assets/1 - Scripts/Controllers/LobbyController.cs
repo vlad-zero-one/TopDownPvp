@@ -16,6 +16,7 @@ namespace Game.Controllers
     public class LobbyController : MonoBehaviour
     {
         [SerializeField] private Text alertTextObject;
+        [SerializeField] private LoadingPanel loadingPanel;
 
         [Header("Create and enter block")]
         [SerializeField] private GameObject createAndEnterContainer;
@@ -47,31 +48,48 @@ namespace Game.Controllers
             connectionManager = DI.Get<ConnectionManager>();
             gameSettings = DI.Get<GameSettings>();
 
-            InitButtons();
+            createRoomButton.onClick.AddListener(CreateRoom);
+            enterRoomButton.onClick.AddListener(EnterRoom);
 
             startMatchInfo = startMatchInfoText.text;
             playersCount = playersCountText.text;
 
             connectionManager.Error += ShowAlert;
+            connectionManager.Error += ShowCreateAndEnterContainer;
             connectionManager.JoinedRoom += ShowStartMatchContainer;
 
             leaveRoomButton.onClick.AddListener(LeaveRoom);
             playButton.onClick.AddListener(Play);
         }
 
+        private void ShowCreateAndEnterContainer(string message)
+        {
+            createAndEnterContainer.SetActive(true);
+            loadingPanel.Hide();
+        }
+
         private void LeaveRoom()
         {
             startMatchContainer.SetActive(false);
-            createAndEnterContainer.SetActive(true);
+            loadingPanel.Show();
 
+            connectionManager.ConnectedToMaster += HideLoading;
             connectionManager.LeaveRoom();
 
             StopCoroutine(recountCoroutine);
         }
 
+        private void HideLoading()
+        {
+            connectionManager.ConnectedToMaster -= HideLoading;
+
+            loadingPanel.Hide();
+            createAndEnterContainer.SetActive(true);
+        }
+
         private void ShowStartMatchContainer()
         {
-            createAndEnterContainer.SetActive(false);
+            loadingPanel.Hide();
             startMatchContainer.SetActive(true);
 
             startMatchInfoText.text = string.Format(startMatchInfo, gameSettings.MinPlayersForGame);
@@ -104,24 +122,6 @@ namespace Game.Controllers
             PhotonNetwork.LoadLevel(Scenes.GameScene);
         }
 
-        private void LoadLoadingScene()
-        {
-            if (connectionManager.EnoughPlayers || gameSettings.StartWithOnePlayer)
-            {
-                PhotonNetwork.LoadLevel(Scenes.GameScene);
-            }
-            else
-            {
-                SceneManager.LoadScene(Scenes.LoadingScene);
-            }
-        }
-
-        private void InitButtons()
-        {
-            createRoomButton.onClick.AddListener(CreateRoom);
-            enterRoomButton.onClick.AddListener(EnterRoom);
-        }
-
         private void EnterRoom()
         {
             if (roomName.text.IsNullOrEmpty())
@@ -130,6 +130,9 @@ namespace Game.Controllers
             }
             else
             {
+                createAndEnterContainer.SetActive(false);
+                loadingPanel.Show();
+
                 connectionManager.JoinRoom(roomName.text);
             }
         }
@@ -142,6 +145,9 @@ namespace Game.Controllers
             }
             else
             {
+                createAndEnterContainer.SetActive(false);
+                loadingPanel.Show();
+
                 connectionManager.CreateRoom(newRoomName.text);
             }
         }
@@ -169,10 +175,13 @@ namespace Game.Controllers
         private void OnDestroy()
         {
             connectionManager.Error -= ShowAlert;
+            connectionManager.Error -= ShowCreateAndEnterContainer;
             connectionManager.JoinedRoom -= ShowStartMatchContainer;
 
             leaveRoomButton.onClick.RemoveListener(LeaveRoom);
             playButton.onClick.RemoveListener(Play);
+
+            connectionManager.ConnectedToMaster -= HideLoading;
         }
     }
 }
