@@ -9,6 +9,8 @@ using Game.Views;
 using System.Collections.Generic;
 using Game.UI;
 using Game.Static;
+using Game.Controllers.Abstract;
+using Game.Model;
 
 namespace Game.Controllers
 {
@@ -34,6 +36,9 @@ namespace Game.Controllers
 
         private List<PlayerView> otherPlayers = new();
         private bool defeated;
+
+        private IBulletPool bulletPool;
+        private Bullet currentBullet;
 
         public void AddOtherPlayer(PlayerView otherPlayer)
         {
@@ -68,6 +73,8 @@ namespace Game.Controllers
             shootController.Init(playerSettings.ShootCooldown);
 
             InitSubscribtions();
+
+            //bulletPool.Init();
         }
 
         private void InitSubscribtions()
@@ -135,12 +142,16 @@ namespace Game.Controllers
 
         private void Shoot()
         {
+            // old system
             player.photonView.RPC("Shoot",
                 RpcTarget.AllViaServer,
                 player.transform.position.x,
                 player.transform.position.y,
                 lastDirection.x,
                 lastDirection.y);
+            
+            // new system
+            bulletPool.Shoot(currentBullet);
         }
 
         private void LoadLobbyScene()
