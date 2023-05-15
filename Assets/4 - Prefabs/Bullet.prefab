@@ -137,3 +137,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rbody: {fileID: 4178978478782074681}
+  spriteRenderer: {fileID: 4301416886828763327}

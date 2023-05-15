@@ -11,7 +11,7 @@ namespace Game.Model
         public float Speed { get; private set; }
         public float Lag { get; private set; }
 
-        public void Init(Player owner, Vector3 position, Vector3 direction, float speed, float lag)
+        public Bullet(Player owner, Vector3 position, Vector3 direction, float speed, float lag = 0)
         {
             Owner = owner;
             Direction = direction;

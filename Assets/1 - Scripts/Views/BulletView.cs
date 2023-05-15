@@ -13,6 +13,11 @@ namespace Game.Views
 
         public Player Owner { get; private set; }
 
+        public delegate void HitEventArgs(BulletView bulletView);
+        public event HitEventArgs Hit;
+
+        private Bullet bullet;
+
         public void Init(Player owner, Vector3 direction, float speed, float lag)
         {
             Owner = owner;
@@ -26,15 +31,19 @@ namespace Game.Views
         public void NewInit(Bullet bullet, Sprite sprite)
         {
             Owner = bullet.Owner;
+            this.bullet = bullet;
 
+            transform.position = bullet.Position;
             transform.up = bullet.Direction;
 
+            // TODO: sprites
+            //spriteRenderer.sprite = sprite;
+        }
+
+        public void StartMove()
+        {
             rbody.velocity = bullet.Direction.normalized * bullet.Speed;
             rbody.position += rbody.velocity * bullet.Lag;
-
-            spriteRenderer.sprite = sprite;
-
-            gameObject.SetActive(true);
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -43,14 +52,14 @@ namespace Game.Views
 
             if (collision.gameObject.CompareTag(Tags.Obstacle))
             {
-                Destroy(gameObject);
+                Hit?.Invoke(this);
                 return;
             }
 
             var player = collision.gameObject.GetComponent<PlayerView>();
             if (player != null && player.photonView.Owner != Owner)
             {
-                Destroy(gameObject);
+                Hit?.Invoke(this);
             }
         }
     }

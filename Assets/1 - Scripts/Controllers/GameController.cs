@@ -25,8 +25,12 @@ namespace Game.Controllers
         [SerializeField] private PlayerStatsController playerStatsController;
         [SerializeField] private EndBattleScreenController endBattleScreen;
 
+        [SerializeField] private BulletPoolPun bulletPoolPun;
+        [SerializeField] private BulletView bulletViewPrefab;
+
         private ConnectionManager connectionManager;
         private GameSettings gameSettings;
+        private PlayerSettings playerSettings;
 
         private IMoveController moveController;
         private IShootController shootController;
@@ -53,7 +57,7 @@ namespace Game.Controllers
 
             connectionManager = DI.Get<ConnectionManager>();
             gameSettings = DI.Get<GameSettings>();
-            var playerSettings = DI.Get<PlayerSettings>();
+            playerSettings = DI.Get<PlayerSettings>();
 
             object[] data = new object[1];
             data[0] = DI.Get<PlayerAppearanceData>().GetRandomSkinName();
@@ -72,9 +76,10 @@ namespace Game.Controllers
             moveController.Init();
             shootController.Init(playerSettings.ShootCooldown);
 
-            InitSubscribtions();
+            bulletPool = bulletPoolPun;
+            bulletPool.Init(bulletViewPrefab, 5);
 
-            //bulletPool.Init();
+            InitSubscribtions();
         }
 
         private void InitSubscribtions()
@@ -143,14 +148,19 @@ namespace Game.Controllers
         private void Shoot()
         {
             // old system
-            player.photonView.RPC("Shoot",
-                RpcTarget.AllViaServer,
-                player.transform.position.x,
-                player.transform.position.y,
-                lastDirection.x,
-                lastDirection.y);
-            
+            //player.photonView.RPC("Shoot",
+            //    RpcTarget.AllViaServer,
+            //    player.transform.position.x,
+            //    player.transform.position.y,
+            //    lastDirection.x,
+            //    lastDirection.y);
+
             // new system
+            currentBullet = new Bullet(
+                player.photonView.Owner, 
+                player.transform.position, 
+                lastDirection, 
+                playerSettings.BulletSpeed);
             bulletPool.Shoot(currentBullet);
         }
 
