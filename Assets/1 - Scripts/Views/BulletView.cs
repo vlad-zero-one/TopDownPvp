@@ -40,10 +40,10 @@ namespace Game.Views
             //spriteRenderer.sprite = sprite;
         }
 
-        public void StartMove()
+        public void StartMove(float lag)
         {
             rbody.velocity = bullet.Direction.normalized * bullet.Speed;
-            rbody.position += rbody.velocity * bullet.Lag;
+            rbody.position += rbody.velocity * lag;
         }
 
         private void OnTriggerEnter2D(Collider2D collision)

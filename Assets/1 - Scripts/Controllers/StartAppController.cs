@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using Game.Configs;
 using DependencyInjection;
 using Game.Static;
+using Game.Model;
 
 namespace Game.Controllers
 {
@@ -23,6 +24,8 @@ namespace Game.Controllers
             DI.Add(gameSettings);
 
             logger.Init();
+
+            PhotonCustomTypesRegistrationManager.Register();
 
             connectionManager = new();
             connectionManager.ConnectedToMaster += SwitchScene;

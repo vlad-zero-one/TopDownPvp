@@ -34,6 +34,12 @@ namespace Game.Controllers
 
         public void Shoot(Bullet bullet)
         {
+            photonView.RPC("ShootRPC", RpcTarget.AllViaServer, bullet);
+        }
+
+        [PunRPC]
+        private void ShootRPC(Bullet bullet, PhotonMessageInfo info)
+        {
             if (!bulletViewsPool.TryPop(out var bulletView))
             {
                 bulletView = Instantiate(bulletViewPrefab, gameObject.transform);
@@ -45,7 +51,9 @@ namespace Game.Controllers
             activeBulletViews.Add(bulletView);
 
             bulletView.gameObject.SetActive(true);
-            bulletView.StartMove();
+
+            var lag = (float)(PhotonNetwork.Time - info.SentServerTime);
+            bulletView.StartMove(Mathf.Abs(lag));
         }
 
         private void PoolBulletView(BulletView bulletView)

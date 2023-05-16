@@ -9,15 +9,13 @@ namespace Game.Model
         public Vector3 Position { get; private set; }
         public Vector3 Direction { get; private set; }
         public float Speed { get; private set; }
-        public float Lag { get; private set; }
 
-        public Bullet(Player owner, Vector3 position, Vector3 direction, float speed, float lag = 0)
+        public Bullet(Player owner, Vector3 position, Vector3 direction, float speed)
         {
             Owner = owner;
             Direction = direction;
             Position = position;
             Speed = speed;
-            Lag = lag;
         }
     }
 }
