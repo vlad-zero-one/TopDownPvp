@@ -11,6 +11,7 @@ using Game.UI;
 using Game.Static;
 using Game.Controllers.Abstract;
 using Game.Model;
+using Game.UI.Abstract;
 
 namespace Game.Controllers
 {
@@ -77,6 +78,7 @@ namespace Game.Controllers
             shootController.Init(playerSettings.ShootCooldown);
 
             bulletPool = bulletPoolPun;
+            // TODO: settings.bulletPoolCapacity * PlayersNumber
             bulletPool.Init(bulletViewPrefab, 5);
 
             InitSubscribtions();

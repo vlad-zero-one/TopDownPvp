@@ -1,4 +1,4 @@
-namespace Game.UI
+namespace Game.UI.Abstract
 {
     public interface IShootController
     {

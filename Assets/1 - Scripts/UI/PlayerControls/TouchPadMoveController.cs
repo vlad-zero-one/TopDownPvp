@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Game.UI.Abstract;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Game.UI
