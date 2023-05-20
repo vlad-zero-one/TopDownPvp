@@ -22,7 +22,7 @@ namespace Game.UI
             gameObject.SetActive(true);
         }
 
-        public void Init(float shootCooldown)
+        public void SetCooldown(float shootCooldown)
         {
             gameObject.SetActive(true);
 

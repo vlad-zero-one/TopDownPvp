@@ -20,6 +20,7 @@ namespace Game.Controllers
             bulletViewsPool = new(poolSize);
             activeBulletViews = new(poolSize);
 
+            // deactivate while instantiating child bullets
             gameObject.SetActive(false);
 
             for (var i = 0; i < poolSize; i++)

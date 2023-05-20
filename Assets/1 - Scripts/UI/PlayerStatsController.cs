@@ -19,13 +19,13 @@ namespace Game.UI
             hpBar.value = playerSettings.PlayerHealth;
             coinsValueText.text = "0";
 
-            player.Damaged += DecreaseHp;
+            player.Damaged += UpdateHp;
             player.GotCoin += UpdateCoins;
         }
 
-        private void DecreaseHp()
+        private void UpdateHp()
         {
-            hpBar.value--;
+            hpBar.value = player.Hp >= 0 ? player.Hp : 0;
         }
 
         private void UpdateCoins()
@@ -35,7 +35,7 @@ namespace Game.UI
 
         private void OnDestroy()
         {
-            player.Damaged -= DecreaseHp;
+            player.Damaged -= UpdateHp;
             player.GotCoin -= UpdateCoins;
         }
     }

@@ -16,8 +16,6 @@ namespace Game.Views
         [SerializeField] private Text nickName;
         [SerializeField] private Slider slider;
 
-        [SerializeField] private BulletView bulletPrefab;
-
         private PlayerSettings playerSettings;
         private GameSettings gameSettings;
 
@@ -37,6 +35,7 @@ namespace Game.Views
         public event EventHandler GotCoin;
 
         public int Coins { get; private set; }
+        public int Hp => hp;
 
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
@@ -93,21 +92,10 @@ namespace Game.Views
         }
 
         [PunRPC]
-        private void Shoot(float positionX, float positionY, float directionX, float directionY, PhotonMessageInfo info)
+        private void Damage(int value)
         {
-            var lag = (float)(PhotonNetwork.Time - info.SentServerTime);
-
-            var bullet = Instantiate(bulletPrefab, new(positionX, positionY), Quaternion.identity);
-            bullet.Init(photonView.Owner,
-                new(directionX, directionY),
-                playerSettings.BulletSpeed,
-                Mathf.Abs(lag));
-        }
-
-        [PunRPC]
-        private void Damage()
-        {
-            slider.value = --hp;
+            hp = hp - value > 0 ? hp - value : 0;
+            slider.value = hp;
             Damaged?.Invoke();
 
             if (hp <= 0)
@@ -154,8 +142,8 @@ namespace Game.Views
             var bullet = collision.gameObject.GetComponent<BulletView>();
             if (bullet != null && bullet.Owner != photonView.Owner)
             {
-                Damage();
-                photonView.RPC("Damage", RpcTarget.OthersBuffered);
+                Damage(bullet.Damage);
+                photonView.RPC("Damage", RpcTarget.OthersBuffered, bullet.Damage);
             }
         }
 

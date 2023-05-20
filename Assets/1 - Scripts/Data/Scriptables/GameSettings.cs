@@ -12,6 +12,7 @@ namespace Game.Configs
         [SerializeField] private int minPlayersForGame;
         [SerializeField] private int coinsOnField;
         [SerializeField] private int attemptsToSpawnCoin;
+        [SerializeField] private int bulletPoolCapacityPerPlayer;
 
         [SerializeField] private bool startWithOnePlayer;
         [SerializeField] private bool keyBoardControl;
@@ -22,6 +23,7 @@ namespace Game.Configs
         public int MinPlayersForGame => minPlayersForGame;
         public int CoinsOnField => coinsOnField;
         public int AttemptsToSpawnCoin => attemptsToSpawnCoin;
+        public int BulletPoolCapacityPerPlayer => bulletPoolCapacityPerPlayer;
         public bool StartWithOnePlayer => startWithOnePlayer;
         public bool KeyBoardControl => keyBoardControl;
     }

@@ -4,12 +4,15 @@ namespace Game.Model.Upgrades
 {
     public class BaseUpgrade
     {
+        public readonly UpgradeType Type;
         public readonly IReadOnlyList<float> Multipliers;
         public int Level { get; private set; } = 0;
         public float CurrentMultiplier => Multipliers[Level];
 
-        public BaseUpgrade(IReadOnlyList<float> multipliers)
+        public BaseUpgrade(UpgradeType type, IReadOnlyList<float> multipliers)
         {
+            Type = type;
+
             if (multipliers == null || multipliers.Count < 1)
             {
                 throw new System.Exception($"Can't initialize {this}: multipliers in null or empty");

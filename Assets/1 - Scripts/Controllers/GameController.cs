@@ -12,6 +12,8 @@ using Game.Static;
 using Game.Controllers.Abstract;
 using Game.Model;
 using Game.UI.Abstract;
+using Game.Managers;
+using Game.Managers.Abstract;
 
 namespace Game.Controllers
 {
@@ -37,13 +39,12 @@ namespace Game.Controllers
         private IShootController shootController;
 
         private PlayerView player;
-        private Vector2 lastDirection = Vector2.up;
 
         private List<PlayerView> otherPlayers = new();
         private bool defeated;
 
         private IBulletPool bulletPool;
-        private Bullet currentBullet;
+        private WeaponManager weaponManager;
 
         public void AddOtherPlayer(PlayerView otherPlayer)
         {
@@ -75,11 +76,12 @@ namespace Game.Controllers
             shootController = gameSettings.KeyBoardControl ? keyboardController : buttonShootController;
 
             moveController.Init();
-            shootController.Init(playerSettings.ShootCooldown);
 
             bulletPool = bulletPoolPun;
-            // TODO: settings.bulletPoolCapacity * PlayersNumber
-            bulletPool.Init(bulletViewPrefab, 5);
+            bulletPool.Init(bulletViewPrefab,
+                gameSettings.BulletPoolCapacityPerPlayer * PhotonNetwork.CurrentRoom.PlayerCount);
+
+            weaponManager = new WeaponManager(player, shootController, bulletPool);
 
             InitSubscribtions();
         }
@@ -90,8 +92,6 @@ namespace Game.Controllers
 
             moveController.MoveDirective += MovePlayer;
             moveController.StopDirective += StopPlayer;
-
-            shootController.ShootDirective += Shoot;
 
             connectionManager.LeftRoom += LoadLobbyScene;
             connectionManager.NewMaster += SyncCoinsForNewPlayer;
@@ -147,25 +147,6 @@ namespace Game.Controllers
             Destroy(player.gameObject, gameSettings.DestroyDeadTime);
         }
 
-        private void Shoot()
-        {
-            // old system
-            //player.photonView.RPC("Shoot",
-            //    RpcTarget.AllViaServer,
-            //    player.transform.position.x,
-            //    player.transform.position.y,
-            //    lastDirection.x,
-            //    lastDirection.y);
-
-            // new system
-            currentBullet = new Bullet(
-                player.photonView.Owner, 
-                player.transform.position, 
-                lastDirection, 
-                playerSettings.BulletSpeed);
-            bulletPool.Shoot(currentBullet);
-        }
-
         private void LoadLobbyScene()
         {
             SceneManager.LoadScene(Scenes.LobbyScene);
@@ -175,7 +156,6 @@ namespace Game.Controllers
         {
             if (direction != Vector2.zero)
             {
-                lastDirection = direction;
                 player.StartMove(direction);
             }
         }
@@ -197,7 +177,7 @@ namespace Game.Controllers
             moveController.MoveDirective -= MovePlayer;
             moveController.StopDirective -= StopPlayer;
 
-            shootController.ShootDirective -= Shoot;
+            weaponManager.Dispose();
 
             connectionManager.LeftRoom -= LoadLobbyScene;
             connectionManager.NewMaster -= SyncCoinsForNewPlayer;

@@ -13,7 +13,7 @@ namespace Game.UI
 
         public event IShootController.ShootEventHandler ShootDirective;
 
-        public void Init(float shootCooldown)
+        public void SetCooldown(float shootCooldown)
         {
             gameObject.SetActive(true);
 

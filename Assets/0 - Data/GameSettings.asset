@@ -18,5 +18,6 @@ MonoBehaviour:
   minPlayersForGame: 2
   coinsOnField: 1
   attemptsToSpawnCoin: 5
+  bulletPoolCapacityPerPlayer: 5
   startWithOnePlayer: 1
   keyBoardControl: 1

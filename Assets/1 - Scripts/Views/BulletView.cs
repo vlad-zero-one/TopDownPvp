@@ -11,12 +11,13 @@ namespace Game.Views
         [SerializeField] private Rigidbody2D rbody;
         [SerializeField] private SpriteRenderer spriteRenderer;
 
-        public Player Owner { get; private set; }
-
         public delegate void HitEventArgs(BulletView bulletView);
         public event HitEventArgs Hit;
 
         private Bullet bullet;
+
+        public Player Owner { get; private set; }
+        public int Damage => bullet.Damage;
 
         public void Init(Player owner, Vector3 direction, float speed, float lag)
         {
@@ -33,7 +34,7 @@ namespace Game.Views
             Owner = bullet.Owner;
             this.bullet = bullet;
 
-            transform.position = bullet.Position;
+            transform.position = bullet.StartPosition;
             transform.up = bullet.Direction;
 
             // TODO: sprites

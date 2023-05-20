@@ -6,7 +6,7 @@ namespace Game.Model
 {
     public static class BulletSerializer
     {
-        private const int ByteArraySize = sizeof(int) + 5 * sizeof(float);
+        private const int ByteArraySize = 2 * sizeof(int) + 5 * sizeof(float);
 
         public static byte[] Serialize(object bulletObject)
         {
@@ -15,11 +15,12 @@ namespace Game.Model
             var bullet = (Bullet)bulletObject;
 
             BitConverter.GetBytes(bullet.Owner.ActorNumber).CopyTo(result, 0);
-            BitConverter.GetBytes(bullet.Position.x).CopyTo(result, sizeof(int));
-            BitConverter.GetBytes(bullet.Position.y).CopyTo(result, sizeof(int) + sizeof(float));
+            BitConverter.GetBytes(bullet.StartPosition.x).CopyTo(result, sizeof(int));
+            BitConverter.GetBytes(bullet.StartPosition.y).CopyTo(result, sizeof(int) + sizeof(float));
             BitConverter.GetBytes(bullet.Direction.x).CopyTo(result, sizeof(int) + 2 * sizeof(float));
             BitConverter.GetBytes(bullet.Direction.y).CopyTo(result, sizeof(int) + 3 * sizeof(float));
             BitConverter.GetBytes(bullet.Speed).CopyTo(result, sizeof(int) + 4 * sizeof(float));
+            BitConverter.GetBytes(bullet.Damage).CopyTo(result, sizeof(int) + 5 * sizeof(float));
 
             return result;
         }
@@ -48,7 +49,9 @@ namespace Game.Model
 
             var speed = BitConverter.ToSingle(data, sizeof(int) + 4 * sizeof(float));
 
-            return new(player, position, direction, speed);
+            var damage = BitConverter.ToInt32(data, sizeof(int) + 5 * sizeof(float));
+
+            return new(player, position, direction, speed, damage);
         }
     }
 }
