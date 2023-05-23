@@ -25,7 +25,15 @@ namespace Game
         public event EventHandler ConnectedToMaster;
         public event PlayersCountEventHandler CountOfPlayersInRoomsChanged;
 
-        public bool EnoughPlayers => PhotonNetwork.CurrentRoom.PlayerCount >= countOfPlayersToStart;
+        public int PlayersCountInTheRoom
+        {
+            get
+            {
+                if (PhotonNetwork.CurrentRoom != null) return PhotonNetwork.CurrentRoom.PlayerCount;
+                else throw new("Can't count players, you are not in the room");
+            }
+        }
+        public bool EnoughPlayers => PlayersCountInTheRoom >= countOfPlayersToStart;
 
         public void InitConnection()
         {

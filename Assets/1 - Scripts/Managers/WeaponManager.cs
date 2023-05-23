@@ -10,25 +10,38 @@ using System;
 
 namespace Game.Managers
 {
+    /// <summary>
+    /// Manager where weapon managment and shooting must be implemented
+    /// </summary>
     public class WeaponManager : IWeaponManager, IDisposable
     {
-        private IShootController shootController;
-        private IBulletPool bulletPool;
-        private PlayerView playerView;
+        private readonly IShootController shootController;
+        private readonly IBulletPool bulletPool;
+        private readonly PlayerView playerView;
 
-        private PlayerSettings playerSettings;
-        private GameSettings gameSettings;
+        private readonly PlayerSettings playerSettings;
+        private readonly GameSettings gameSettings;
 
         private Bullet bulletPrototype;
 
-        public WeaponManager(PlayerView playerView, IShootController shootController, IBulletPool bulletPool)
+        public WeaponManager(
+            ConnectionManager connectionManager,
+            IShootController shootController,
+            IBulletPool bulletPool,
+            PlayerView playerView,
+            BulletView bulletViewPrefab,
+            PlayerSettings playerSettings,
+            GameSettings gameSettings)
         {
             this.playerView = playerView;
             this.shootController = shootController;
             this.bulletPool = bulletPool;
 
-            playerSettings = DI.Get<PlayerSettings>();
-            gameSettings = DI.Get<GameSettings>();
+            this.playerSettings = playerSettings;
+            this.gameSettings = gameSettings;
+
+            bulletPool.Init(bulletViewPrefab,
+                gameSettings.BulletPoolCapacityPerPlayer * connectionManager.PlayersCountInTheRoom);
 
             bulletPrototype =
                 new(playerView.photonView.Owner, playerSettings.BulletSpeed, playerSettings.BulletDamage);

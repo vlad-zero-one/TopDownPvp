@@ -10,10 +10,8 @@ using System.Collections.Generic;
 using Game.UI;
 using Game.Static;
 using Game.Controllers.Abstract;
-using Game.Model;
 using Game.UI.Abstract;
 using Game.Managers;
-using Game.Managers.Abstract;
 
 namespace Game.Controllers
 {
@@ -78,10 +76,15 @@ namespace Game.Controllers
             moveController.Init();
 
             bulletPool = bulletPoolPun;
-            bulletPool.Init(bulletViewPrefab,
-                gameSettings.BulletPoolCapacityPerPlayer * PhotonNetwork.CurrentRoom.PlayerCount);
 
-            weaponManager = new WeaponManager(player, shootController, bulletPool);
+            weaponManager = new WeaponManager(
+                connectionManager, 
+                shootController, 
+                bulletPool, 
+                player, 
+                bulletViewPrefab, 
+                playerSettings, 
+                gameSettings);
 
             InitSubscribtions();
         }
