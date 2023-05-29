@@ -9,7 +9,6 @@ using Game.Views;
 using System.Collections.Generic;
 using Game.UI;
 using Game.Static;
-using Game.Controllers.Abstract;
 using Game.UI.Abstract;
 using Game.Managers;
 
@@ -31,18 +30,14 @@ namespace Game.Controllers
 
         private ConnectionManager connectionManager;
         private GameSettings gameSettings;
-        private PlayerSettings playerSettings;
-
-        private IMoveController moveController;
-        private IShootController shootController;
 
         private PlayerView player;
 
         private List<PlayerView> otherPlayers = new();
         private bool defeated;
 
-        private IBulletPool bulletPool;
         private WeaponManager weaponManager;
+        private MoveManager moveManager;
 
         public void AddOtherPlayer(PlayerView otherPlayer)
         {
@@ -57,9 +52,8 @@ namespace Game.Controllers
 
             connectionManager = DI.Get<ConnectionManager>();
             gameSettings = DI.Get<GameSettings>();
-            playerSettings = DI.Get<PlayerSettings>();
 
-            object[] data = new object[1];
+            var data = new object[1];
             data[0] = DI.Get<PlayerAppearanceData>().GetRandomSkinName();
 
             player = PhotonNetwork.Instantiate(NetworkPrefabs.Player,
@@ -68,19 +62,21 @@ namespace Game.Controllers
                     data: data)
                 .GetComponent<PlayerView>();
 
+            var playerSettings = DI.Get<PlayerSettings>();
+
             playerStatsController.Init(playerSettings, player);
 
-            moveController = gameSettings.KeyBoardControl ? keyboardController : touchPadMoveController;
-            shootController = gameSettings.KeyBoardControl ? keyboardController : buttonShootController;
+            IMoveController moveController = 
+                gameSettings.KeyBoardControl ? keyboardController : touchPadMoveController;
+            IShootController shootController = 
+                gameSettings.KeyBoardControl ? keyboardController : buttonShootController;
 
-            moveController.Init();
-
-            bulletPool = bulletPoolPun;
+            moveManager = new MoveManager(moveController, player);
 
             weaponManager = new WeaponManager(
                 connectionManager, 
-                shootController, 
-                bulletPool, 
+                shootController,
+                bulletPoolPun, 
                 player, 
                 bulletViewPrefab, 
                 playerSettings, 
@@ -92,9 +88,6 @@ namespace Game.Controllers
         private void InitSubscribtions()
         {
             leaveButton.onClick.AddListener(LeaveRoom);
-
-            moveController.MoveDirective += MovePlayer;
-            moveController.StopDirective += StopPlayer;
 
             connectionManager.LeftRoom += LoadLobbyScene;
             connectionManager.NewMaster += SyncCoinsForNewPlayer;
@@ -155,19 +148,6 @@ namespace Game.Controllers
             SceneManager.LoadScene(Scenes.LobbyScene);
         }
 
-        private void MovePlayer(Vector2 direction)
-        {
-            if (direction != Vector2.zero)
-            {
-                player.StartMove(direction);
-            }
-        }
-
-        private void StopPlayer()
-        {
-            player.StopMove();
-        }
-
         private void LeaveRoom()
         {
             connectionManager.LeaveRoom();
@@ -177,9 +157,7 @@ namespace Game.Controllers
         {
             leaveButton.onClick.RemoveListener(LeaveRoom);
 
-            moveController.MoveDirective -= MovePlayer;
-            moveController.StopDirective -= StopPlayer;
-
+            moveManager.Dispose();
             weaponManager.Dispose();
 
             connectionManager.LeftRoom -= LoadLobbyScene;
