@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Game.Managers
 {
+    /// <summary>
+    /// Manager where moving must be implemented
+    /// </summary>
     public class MoveManager: IDisposable
     {
         private readonly IMoveController moveController;

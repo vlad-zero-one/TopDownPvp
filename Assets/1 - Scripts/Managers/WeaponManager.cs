@@ -1,7 +1,5 @@
-using DependencyInjection;
 using Game.Configs;
 using Game.Controllers.Abstract;
-using Game.Managers.Abstract;
 using Game.Model;
 using Game.Model.Upgrades;
 using Game.UI.Abstract;
@@ -13,14 +11,13 @@ namespace Game.Managers
     /// <summary>
     /// Manager where weapon managment and shooting must be implemented
     /// </summary>
-    public class WeaponManager : IWeaponManager, IDisposable
+    public class WeaponManager : IDisposable
     {
         private readonly IShootController shootController;
         private readonly IBulletPool bulletPool;
         private readonly PlayerView playerView;
 
         private readonly PlayerSettings playerSettings;
-        private readonly GameSettings gameSettings;
 
         private Bullet bulletPrototype;
 
@@ -38,7 +35,6 @@ namespace Game.Managers
             this.bulletPool = bulletPool;
 
             this.playerSettings = playerSettings;
-            this.gameSettings = gameSettings;
 
             bulletPool.Init(bulletViewPrefab,
                 gameSettings.BulletPoolCapacityPerPlayer * connectionManager.PlayersCountInTheRoom);

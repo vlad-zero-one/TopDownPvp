@@ -6,6 +6,8 @@ namespace Game.UI
 {
     public class TouchPadMoveController : MonoBehaviour, IDragHandler, IEndDragHandler, IMoveController
     {
+        private const float DragSensitivity = 0.1f;
+
         [SerializeField] private RectTransform joystickHandler;
         [SerializeField] private RectTransform joystick;
 
@@ -24,7 +26,7 @@ namespace Game.UI
 
         public void OnDrag(PointerEventData data)
         {
-            if (data.delta.magnitude > 0.1f)
+            if (data.delta.magnitude > DragSensitivity)
             {
                 var pressPosition = data.pressPosition;
                 var position = data.position;
