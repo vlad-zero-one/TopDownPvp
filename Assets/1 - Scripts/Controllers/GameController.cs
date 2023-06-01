@@ -11,6 +11,7 @@ using Game.UI;
 using Game.Static;
 using Game.UI.Abstract;
 using Game.Managers;
+using Game.Model;
 
 namespace Game.Controllers
 {
@@ -31,9 +32,10 @@ namespace Game.Controllers
         private ConnectionManager connectionManager;
         private GameSettings gameSettings;
 
-        private PlayerView player;
+        private PlayerView playerView;
+        private PlayerModel playerModel;
 
-        private List<PlayerView> otherPlayers = new();
+        private Dictionary<PlayerModel, PlayerView> otherPlayers = new();
         private bool defeated;
 
         private WeaponManager weaponManager;
@@ -41,9 +43,9 @@ namespace Game.Controllers
 
         public void AddOtherPlayer(PlayerView otherPlayer)
         {
-            otherPlayers.Add(otherPlayer);
+            otherPlayers.Add(otherPlayer.PlayerModel, otherPlayer);
 
-            otherPlayer.Die += RemoveFromList;
+            otherPlayer.PlayerModel.Die += RemoveOtherPlayer;
         }
 
         private void Awake()
@@ -56,28 +58,30 @@ namespace Game.Controllers
             var data = new object[1];
             data[0] = DI.Get<PlayerAppearanceData>().GetRandomSkinName();
 
-            player = PhotonNetwork.Instantiate(NetworkPrefabs.Player,
+            playerView = PhotonNetwork.Instantiate(NetworkPrefabs.Player,
                     mapController.GetSpawnPoint().transform.position,
                     Quaternion.identity,
                     data: data)
                 .GetComponent<PlayerView>();
 
+            playerModel = playerView.PlayerModel;
+
             var playerSettings = DI.Get<PlayerSettings>();
 
-            playerStatsController.Init(playerSettings, player);
+            playerStatsController.Init(playerSettings, playerModel);
 
             IMoveController moveController = 
                 gameSettings.KeyBoardControl ? keyboardController : touchPadMoveController;
             IShootController shootController = 
                 gameSettings.KeyBoardControl ? keyboardController : buttonShootController;
 
-            moveManager = new MoveManager(moveController, player);
+            moveManager = new MoveManager(moveController, playerView);
 
             weaponManager = new WeaponManager(
                 connectionManager, 
                 shootController,
-                bulletPoolPun, 
-                player, 
+                bulletPoolPun,
+                playerView, 
                 bulletViewPrefab, 
                 playerSettings, 
                 gameSettings);
@@ -92,7 +96,7 @@ namespace Game.Controllers
             connectionManager.LeftRoom += LoadLobbyScene;
             connectionManager.NewMaster += SyncCoinsForNewPlayer;
 
-            player.Die += OnPlayerDied;
+            playerModel.Die += OnPlayerDied;
 
             if (PhotonNetwork.IsMasterClient)
             {
@@ -100,15 +104,15 @@ namespace Game.Controllers
             }
         }
 
-        private void RemoveFromList(PlayerView otherPlayer)
+        private void RemoveOtherPlayer(PlayerModel playerModel)
         {
-            otherPlayer.Die -= RemoveFromList;
+            playerModel.Die -= RemoveOtherPlayer;
 
-            if (otherPlayers.Contains(otherPlayer))
+            if (otherPlayers.ContainsKey(playerModel))
             {
-                otherPlayers.Remove(otherPlayer);
-                Destroy(otherPlayer.gameObject, gameSettings.DestroyDeadTime);
-
+                Destroy(otherPlayers[playerModel].gameObject, gameSettings.DestroyDeadTime);
+                
+                otherPlayers.Remove(playerModel);
                 if (otherPlayers.Count == 0 && !defeated)
                 {
                     Win();
@@ -126,7 +130,7 @@ namespace Game.Controllers
 
         private void Win()
         {
-            endBattleScreen.Show(true, player.Coins);
+            endBattleScreen.Show(true, playerModel.Coins);
 
             if (PhotonNetwork.CurrentRoom != null)
             {
@@ -134,13 +138,13 @@ namespace Game.Controllers
             }
         }
 
-        private void OnPlayerDied(PlayerView _)
+        private void OnPlayerDied(PlayerModel _)
         {
             defeated = true;
 
-            endBattleScreen.Show(false, player.Coins);
+            endBattleScreen.Show(false, playerModel.Coins);
 
-            Destroy(player.gameObject, gameSettings.DestroyDeadTime);
+            Destroy(playerView.gameObject, gameSettings.DestroyDeadTime);
         }
 
         private void LoadLobbyScene()
@@ -163,11 +167,11 @@ namespace Game.Controllers
             connectionManager.LeftRoom -= LoadLobbyScene;
             connectionManager.NewMaster -= SyncCoinsForNewPlayer;
 
-            player.Die -= OnPlayerDied;
+            playerModel.Die -= OnPlayerDied;
 
-            foreach (var otherPlayer in otherPlayers)
+            foreach (var otherPlayer in otherPlayers.Keys)
             {
-                otherPlayer.Die -= RemoveFromList;
+                otherPlayer.Die -= RemoveOtherPlayer;
             }
 
             connectionManager.NewPlayerJoined -= mapController.SyncCoins;

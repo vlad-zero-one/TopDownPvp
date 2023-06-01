@@ -24,7 +24,7 @@ namespace Game.Views
             {
                 if (player.photonView.IsMine)
                 {
-                    player.AddCoint();
+                    player.AddCoins();
                     var point = MapController.GetCoinPoint();
 
                     photonView.RPC("MoveCoin", RpcTarget.AllViaServer, point.x, point.y);

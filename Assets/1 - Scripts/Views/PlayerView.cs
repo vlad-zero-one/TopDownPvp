@@ -1,6 +1,7 @@
 using DependencyInjection;
 using Game.Configs;
 using Game.Controllers;
+using Game.Model;
 using Game.Static;
 using Photon.Pun;
 using System.Collections;
@@ -19,7 +20,6 @@ namespace Game.Views
         private PlayerSettings playerSettings;
         private GameSettings gameSettings;
 
-        private int hp;
         private float speed;
 
         private Vector3 moveDirection;
@@ -27,24 +27,19 @@ namespace Game.Views
 
         private bool justSpawned;
 
-        public delegate void DieEventHandler(PlayerView sender);
-        public delegate void EventHandler();
+        public PlayerModel PlayerModel { get; private set; }
 
-        public event DieEventHandler Die;
-        public event EventHandler Damaged;
-        public event EventHandler GotCoin;
-
-        public int Coins { get; private set; }
-        public int Hp => hp;
-
+        // TODO: if one machine instantiate PlayerView before other machine awake GameController,
+        // AddOtherPlayer will throw exception, rewrite this !!
+        // maybe instantiating everything on the master client is not such a bad idea
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
             var skinName = (string) info.photonView.InstantiationData[0];
 
-            playerSettings = DI.Get<PlayerSettings>();
             gameSettings = DI.Get<GameSettings>();
+            playerSettings = DI.Get<PlayerSettings>();
 
-            hp = playerSettings.PlayerHealth;
+            PlayerModel = new(photonView.Owner, playerSettings.PlayerHealth);
             speed = playerSettings.PlayerSpeed;
 
             var appearanceData = DI.Get<PlayerAppearanceData>();
@@ -65,8 +60,8 @@ namespace Game.Views
             if (!photonView.IsMine)
             {
                 slider.gameObject.SetActive(true);
-                slider.maxValue = hp;
-                slider.value = hp;
+                slider.maxValue = PlayerModel.Hp;
+                slider.value = PlayerModel.Hp;
                 DI.Get<GameController>().AddOtherPlayer(this);
             }
 
@@ -85,23 +80,16 @@ namespace Game.Views
             moving = false;
         }
 
-        public void AddCoint()
+        public void AddCoins(int value = 1)
         {
-            Coins++;
-            GotCoin?.Invoke();
+            PlayerModel.AddCoins(value);
         }
 
         [PunRPC]
         private void Damage(int value)
         {
-            hp = hp - value > 0 ? hp - value : 0;
-            slider.value = hp;
-            Damaged?.Invoke();
-
-            if (hp <= 0)
-            {
-                Die?.Invoke(this);
-            }
+            PlayerModel.Damage(value);
+            slider.value = PlayerModel.Hp;
         }
 
         private IEnumerator SpawnSuffleCooldown()
@@ -130,10 +118,7 @@ namespace Game.Views
             }
         }
 
-        private void OnDestroy()
-        {
-            Die?.Invoke(this);
-        }
+        private void OnDestroy() => PlayerModel.OnViewDestroyed();
 
         private void OnTriggerEnter2D(Collider2D collision)
         {

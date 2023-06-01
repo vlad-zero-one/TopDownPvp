@@ -1,5 +1,5 @@
 using Game.Configs;
-using Game.Views;
+using Game.Model;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,33 +10,33 @@ namespace Game.UI
         [SerializeField] private Slider hpBar;
         [SerializeField] private Text coinsValueText;
 
-        private PlayerView player;
+        private PlayerModel playerModel;
 
-        public void Init(PlayerSettings playerSettings, PlayerView player)
+        public void Init(PlayerSettings playerSettings, PlayerModel playerModel)
         {
-            this.player = player;
+            this.playerModel = playerModel;
             hpBar.maxValue = playerSettings.PlayerHealth;
             hpBar.value = playerSettings.PlayerHealth;
             coinsValueText.text = "0";
 
-            player.Damaged += UpdateHp;
-            player.GotCoin += UpdateCoins;
+            playerModel.Damaged += UpdateHp;
+            playerModel.GotCoins += UpdateCoins;
         }
 
         private void UpdateHp()
         {
-            hpBar.value = player.Hp >= 0 ? player.Hp : 0;
+            hpBar.value = playerModel.Hp >= 0 ? playerModel.Hp : 0;
         }
 
         private void UpdateCoins()
         {
-            coinsValueText.text = $"{player.Coins}";
+            coinsValueText.text = $"{playerModel.Coins}";
         }
 
         private void OnDestroy()
         {
-            player.Damaged -= UpdateHp;
-            player.GotCoin -= UpdateCoins;
+            playerModel.Damaged -= UpdateHp;
+            playerModel.GotCoins -= UpdateCoins;
         }
     }
 }

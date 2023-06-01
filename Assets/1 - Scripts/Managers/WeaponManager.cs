@@ -40,7 +40,7 @@ namespace Game.Managers
                 gameSettings.BulletPoolCapacityPerPlayer * connectionManager.PlayersCountInTheRoom);
 
             bulletPrototype =
-                new(playerView.photonView.Owner, playerSettings.BulletSpeed, playerSettings.BulletDamage);
+                new(playerView.PlayerModel.PhotonPlayer, playerSettings.BulletSpeed, playerSettings.BulletDamage);
 
             this.shootController.SetCooldown(playerSettings.ShootCooldown);
             shootController.ShootDirective += Shoot;
